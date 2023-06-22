@@ -1,8 +1,11 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import librosa as rosa
+import os
 
-FILE_NAME = "Abeille1.wav"
+FILE_NAME = 'Representation\Abeille1.wav'
+
+print(os.getcwd())
 
 # Load the audio file
 data, sample_rate = rosa.load(FILE_NAME)
@@ -27,12 +30,20 @@ magnitudes = np.abs(fft_data)
 # Generate the corresponding frequencies for the FFT coefficients
 frequencies = np.fft.fftfreq(len(magnitudes), 1 / sample_rate)
 
-# Calculate the chromagram 
+# Calculate the chromtoagram 
 S = np.abs(rosa.stft(magnitudes, n_fft=4096))**2
-chroma = rosa.feature.chroma_stft(S=S)
+chroma = rosa.feature.chroma_stft(S=S, sr=sample_rate)
 
-# pitches in 12 tone equal temperament 
-pitches = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B']
+# Calculate the MFCC
+mfccs = rosa.feature.mfcc(y=data, sr=sample_rate)
+
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+                           PLOTTING
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 # Create the subplot for the graphs
 # to change the ratio : gridspec_kw={'width_ratios': [1, 2]}
@@ -55,7 +66,6 @@ ax.set_ylim(- max(data) * 1.01, max(data) * 1.01)
 #plt.axis([0, 1000, 0, max(magnitudes) * 1.01])
 #ax.grid(True)
 
-
 # Plot the FFT
 ax = ax3
 ax.plot(frequencies, magnitudes)
@@ -75,11 +85,11 @@ ax.set_ylabel('Frequency (Hz)')
 ax.set_title('Chromatogram')
 #fig.colorbar(img, ax=ax)
 
-ax = ax5
-mfccs = rosa.feature.mfcc(y=data, sr=sample_rate)
 #Displaying  the MFCCs:
-rosa.display.specshow(mfccs, sr=sample_rate, x_axis='time', ax=ax)
+ax = ax5
+img = rosa.display.specshow(mfccs, sr=sample_rate, x_axis='time', ax=ax)
 ax.set(title='MFCC')
+fig.colorbar(img, ax=ax)
 
 ax = ax6
 img = rosa.display.specshow(chroma, y_axis='chroma', x_axis='time', ax=ax)
