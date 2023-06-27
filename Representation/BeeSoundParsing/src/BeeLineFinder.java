@@ -19,7 +19,9 @@ public class BeeLineFinder {
             }
         }
         for (String fileName : fileNames) {
+            System.out.println("Starting " + fileName);
             parseAFile(fileName);
+            System.out.println(fileName + " is done.");
         }
     }
 

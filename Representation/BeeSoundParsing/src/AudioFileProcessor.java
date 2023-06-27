@@ -4,7 +4,7 @@ import javax.sound.sampled.*;
 class AudioFileProcessor {
 
     public static void main(String[] args) {
-        copyAudio("Sounds/CF003 - Active - Day - (214).wav", "Sounds/uke-shortened.wav", 2, 1);
+        //copyAudio("Sounds/CF003 - Active - Day - (214).wav", "Sounds/uke-shortened.wav", 2, 1);
     }
 
     public static void copyAudio(String sourceFileName, String destinationFileName, int startSecond, int secondsToCopy) {
