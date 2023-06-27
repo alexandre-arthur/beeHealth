@@ -1,15 +1,20 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import librosa as rosa
-import os
+from scipy import signal
 
-FILE_NAME = 'Representation\Abeille1.wav'
-
-print(os.getcwd())
+FILE_NAME = 'Audio_file_3.wav'
+PATH_NAME = 'Representation\Audio\AudioLessThan2Mins\\' + FILE_NAME
 
 # Load the audio file
-data, sample_rate = rosa.load(FILE_NAME)
-#sample_rate, data = wavfile.read(FILE_NAME)
+data, sample_rate = rosa.load(PATH_NAME)
+
+# Filtering the audio signal
+CUT_OFF_FREQUENCY = 1000
+FILTER_ORDER = 8
+sos = signal.butter(FILTER_ORDER, CUT_OFF_FREQUENCY, 'lp', fs=sample_rate, output='sos') # Window
+filtered = signal.sosfilt(sos, data) # Filter
+data = filtered
 
 # Convert the audio data to mono if it has multiple channels
 if len(data.shape) > 1:
@@ -30,13 +35,15 @@ magnitudes = np.abs(fft_data)
 # Generate the corresponding frequencies for the FFT coefficients
 frequencies = np.fft.fftfreq(len(magnitudes), 1 / sample_rate)
 
+# Calculate the angle FFT of the signal
+phase = np.angle(data)
+
 # Calculate the chromtoagram 
 S = np.abs(rosa.stft(magnitudes, n_fft=4096))**2
 chroma = rosa.feature.chroma_stft(S=S, sr=sample_rate)
 
 # Calculate the MFCC
 mfccs = rosa.feature.mfcc(y=data, sr=sample_rate)
-
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -57,7 +64,7 @@ gs = ax2.get_gridspec()
 ax = fig.add_subplot(gs[0, 0:])
 
 # plot the sound wave
-ax.plot(time, data, 'g')
+ax.plot(time, data)
 ax.set_xlabel('Time (s)')
 ax.set_ylabel('Amplitude')
 ax.set_title(' ')
@@ -72,12 +79,10 @@ ax.plot(frequencies, magnitudes)
 ax.set_xlabel('Frequency (Hz)')
 ax.set_ylabel('Magnitude')
 ax.set_title('FFT')
-ax.set_xlim(0, 1000)
+ax.set_xlim(0, CUT_OFF_FREQUENCY)
 ax.set_ylim(0, max(magnitudes) * 1.01)
-#img.grid(True)
 
 # plot the chromagram
-#ax3.plot(pitches, chroma)
 ax = ax4
 ax.specgram(data, mode='psd') # psd = power spectral density
 ax.set_xlabel('Time')
