@@ -3,8 +3,18 @@ import numpy as np
 import librosa as rosa
 from scipy import signal
 
-FILE_NAME = 'Audio_file_3.wav'
-PATH_NAME = 'Representation\Audio\AudioLessThan2Mins\\' + FILE_NAME
+FILE_NAME = 'Hive1_12_06_2018_QueenBee_H1_audio___15_00_00_3.wav'
+PATH_NAME = 'Representation\BeeDataset\OnlyBees\QueenBee\\' + FILE_NAME
+
+def notch_filter(y_pure, samp_freq, notch_freq) :
+    # Create/view notch filter
+    # Frequency to be removed from signal (Hz)
+    quality_factor = 30.0  # Quality factor
+    b_notch, a_notch = signal.iirnotch(notch_freq, quality_factor, samp_freq)
+
+    # apply notch filter to signal
+    y_notched = signal.filtfilt(b_notch, a_notch, y_pure)
+    return y_notched
 
 # Load the audio file
 data, sample_rate = rosa.load(PATH_NAME)
@@ -12,9 +22,10 @@ data, sample_rate = rosa.load(PATH_NAME)
 # Filtering the audio signal
 CUT_OFF_FREQUENCY = 1000
 FILTER_ORDER = 8
-sos = signal.butter(FILTER_ORDER, CUT_OFF_FREQUENCY, 'lp', fs=sample_rate, output='sos') # Window
-filtered = signal.sosfilt(sos, data) # Filter
-data = filtered
+#sos = signal.butter(FILTER_ORDER, CUT_OFF_FREQUENCY, 'lp', fs=sample_rate, output='sos') # Window
+#filtered = signal.sosfilt(sos, data) # Filter
+#data = filtered
+data = notch_filter(data, sample_rate, 40)
 
 # Convert the audio data to mono if it has multiple channels
 if len(data.shape) > 1:
