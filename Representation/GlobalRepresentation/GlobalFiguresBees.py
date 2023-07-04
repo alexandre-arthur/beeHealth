@@ -32,7 +32,7 @@ def getaudiofromfile(PATH_NAME : str):
                            MAIN
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-if __name__ == "__main__":
+def showAllRepresentation():
     # Load the audio file
     data, sample_rate = getaudiofromfile(PATH_NAME)
 
@@ -68,3 +68,6 @@ if __name__ == "__main__":
     fig.tight_layout()
     fig.suptitle("Study of " + FILE_NAME)
     plt.show()
+
+if __name__ == "__main__":
+    allRepresentation()
