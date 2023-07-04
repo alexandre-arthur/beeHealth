@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import librosa as rosa
 from scipy import signal
+import classRepresentation
 
 import Filters
 
@@ -66,8 +67,8 @@ def calculate_maxchroma(chroma) -> str :
         max_pitch = pitches[np.argmax(sum_chroma)]
         return max_pitch
 
-def calculate_MFCC(data, sr : int):
-     # Let's make and display a mel-scaled power (energy-squared) spectrogram
+def calculate_mfcc(data, sr : int):
+    # Let's make and display a mel-scaled power (energy-squared) spectrogram
     S = rosa.feature.melspectrogram(y=data, sr=sr, n_mels=128)
 
     # Convert to log scale (dB). We'll use the peak power as reference.
@@ -100,7 +101,7 @@ def plot_wave(time, data, ax):
     ylim = max(data) * 1.01
     generic_plot(time, data, ax, xlabel, ylabel, title, 0, maxTime, -ylim, ylim)
 
-def plotfct_wave(data, ax=None):
+def plotfct_wave(data, sr, ax=None):
     time = calculate_time(data)
     plot_wave(time, data, ax)
 
@@ -134,7 +135,8 @@ def plot_chromatogram(data, ax=None):
         ax.set_ylabel(ylabel)
         ax.set_title(title)
 
-def plotfct_chromatogram(data, ax):
+
+def plotfct_chromatogram(data, sr, ax):
     plot_chromatogram(data, ax)
 
 def plot_chromafeature(chroma, ax=None, fig=None):
@@ -153,7 +155,7 @@ def plotfct_chromafeature(data, sr, ax):
     chroma = calculate_chroma(data, sr)
     plot_chromafeature(chroma, ax)
 
-def plot_MFCC(mfccs, sr, ax=None, fig=None):
+def plot_mfcc(mfccs, sr, ax=None, fig=None):
     xlabel = 'time'
     title = 'MFCC'
     if ax == None:
@@ -164,9 +166,9 @@ def plot_MFCC(mfccs, sr, ax=None, fig=None):
         if fig != None :
             fig.colorbar(img, ax=ax)
 
-def plotfct_MFCC(data, sr, ax):
-    mfccs = calculate_MFCC(data, sr)
-    plot_MFCC(mfccs, sr, ax)
+def plotfct_mfcc(data, sr, ax):
+    mfccs = calculate_mfcc(data, sr)
+    plot_mfcc(mfccs, sr, ax)
     
 
 
@@ -196,7 +198,7 @@ if __name__ == "__main__":
     chroma = calculate_chroma(data, sample_rate)
     max_pitch = calculate_maxchroma(chroma)
 
-    mfccs = calculate_MFCC(data, sample_rate)
+    mfccs = calculate_mfcc(data, sample_rate)
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -219,7 +221,19 @@ if __name__ == "__main__":
     # plot the sound wave
     plot_wave(time, data, ax)
 
-    # Plot the FFT
+    fft = classRepresentation.FFTclass()
+    fft.plotfct(data, sample_rate, ax3)
+
+    chromatogram = classRepresentation.Chromatogramclass()
+    chromatogram.plotfct(data, sample_rate, ax4)
+
+    chromafeature = classRepresentation.ChromaFeatureclass()
+    chromafeature.plotfct(data, sample_rate, ax5)
+
+    mfcc = classRepresentation.MFCCclass()
+    mfcc.plotfct(data, sample_rate, ax6)
+
+    """# Plot the FFT
     ax = ax3
     plot_FFT(magnitudes, frequencies, ax)
 
@@ -229,12 +243,12 @@ if __name__ == "__main__":
 
     #Displaying  the MFCCs:
     ax = ax5
-    plot_MFCC(mfccs, sample_rate, ax, fig)
+    plot_mfcc(mfccs, sample_rate, ax, fig)
 
     # Displaying the chroma feature
     ax = ax6
     plot_chromafeature(chroma, ax, fig)
-
+"""
     fig.tight_layout()
     fig.suptitle("Study of " + FILE_NAME)
     plt.show()
