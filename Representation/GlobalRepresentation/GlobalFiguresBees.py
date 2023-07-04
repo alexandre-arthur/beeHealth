@@ -247,8 +247,8 @@ if __name__ == "__main__":
 
     # Displaying the chroma feature
     ax = ax6
-    plot_chromafeature(chroma, ax, fig)
-"""
+    plot_chromafeature(chroma, ax, fig)"""
+
     fig.tight_layout()
     fig.suptitle("Study of " + FILE_NAME)
     plt.show()

@@ -58,7 +58,7 @@ class FFTclass(Representation):
         # Generate the corresponding frequencies for the FFT coefficients
         frequencies = np.fft.fftfreq(len(magnitudes), 1 / sr)
 
-        return magnitudes, frequencies
+        return frequencies, magnitudes
     
     def plot(self, x, y , ax):
         CUT_OFF_FREQUENCY = 4000
@@ -69,6 +69,13 @@ class FFTclass(Representation):
         xlim = CUT_OFF_FREQUENCY
         ylim = max(y) * 1.01
         self.generic_plot(x, y, ax, xlabel, ylabel, title, 0, xlim, 0, ylim)
+
+    def calculate_maxFFT(magnitudes, frequencies) -> float :
+        # Calculate the highest for a frequency
+        argmax = np.array(magnitudes).argmax()
+        high_freq = abs(frequencies[argmax])
+        high_freq = round(high_freq, 2)
+        return high_freq
 
 class ChromaFeatureclass(Representation):
     def __init__(self):
@@ -89,6 +96,12 @@ class ChromaFeatureclass(Representation):
         else:
             rosa.display.specshow(chroma, y_axis=ylabel, x_axis=xlabel, ax=ax)
             ax.set(title=title)
+
+    def calculate_maxchroma(chroma) -> str :
+        sum_chroma = [sum(c) for c in chroma]
+        pitches = ['C', 'C#', 'D', 'D#','E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
+        max_pitch = pitches[np.argmax(sum_chroma)]
+        return max_pitch
 
 
 class MFCCclass(Representation):
@@ -140,3 +153,9 @@ class Chromatogramclass(Representation):
             ax.set_xlabel(xlabel)
             ax.set_ylabel(ylabel)
             ax.set_title(title)
+
+    def calculate_maxchroma(chroma) -> str :
+        sum_chroma = [sum(c) for c in chroma]
+        pitches = ['C', 'C#', 'D', 'D#','E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
+        max_pitch = pitches[np.argmax(sum_chroma)]
+        return max_pitch
