@@ -15,6 +15,8 @@ CUT_OFF_FREQUENCY = 4000
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
+# Maths
+
 def getaudiofromfile(PATH_NAME : str):
     # Load the audio file
     data, sample_rate = rosa.load(PATH_NAME)
@@ -25,7 +27,7 @@ def getaudiofromfile(PATH_NAME : str):
     
     return data, sample_rate
 
-def calculate_FFT(data):
+def calculate_FFT(data, sample_rate):
     # Apply FFT to the audio data
     fft_data = np.fft.fft(data)
 
@@ -73,6 +75,7 @@ def calculate_MFCC(data, sr : int):
 
     return mfccs
 
+# Plots
 def generic_plot(x, y, ax, xlabel, ylabel, title, xmin, xmax, ymin, ymax):
     if ax == None :
         plt.plot(x, y)
@@ -89,13 +92,17 @@ def generic_plot(x, y, ax, xlabel, ylabel, title, xmin, xmax, ymin, ymax):
         ax.set_xlim(xmin, xmax)
         ax.set_ylim(ymin, ymax)
 
-def plot_wave(time, data, ax=None):
+def plot_wave(time, data, ax):
     xlabel = 'Time (s)'
     ylabel = 'Amplitude'
     title = 'Wave sound'
     maxTime = max(time)
     ylim = max(data) * 1.01
     generic_plot(time, data, ax, xlabel, ylabel, title, 0, maxTime, -ylim, ylim)
+
+def plotfct_wave(data, ax=None):
+    time = calculate_time(data)
+    plot_wave(time, data, ax)
 
 def plot_FFT(magnitudes, frequencies, ax=None):
     CUT_OFF_FREQUENCY = 4000
@@ -106,6 +113,11 @@ def plot_FFT(magnitudes, frequencies, ax=None):
     xlim = CUT_OFF_FREQUENCY
     ylim = max(magnitudes) * 1.01
     generic_plot(frequencies, magnitudes, ax, xlabel, ylabel, title, 0, xlim, 0, ylim)
+
+def plotfct_FFT(data, sr, ax):
+    magnitudes, frequencies = calculate_FFT(data, sr)
+    plot_FFT(magnitudes, frequencies, ax)
+
 
 def plot_chromatogram(data, ax=None):
     xlabel = 'Time'
@@ -122,15 +134,39 @@ def plot_chromatogram(data, ax=None):
         ax.set_ylabel(ylabel)
         ax.set_title(title)
 
-def plot_chromafeature(chroma, ax=None):
+def plotfct_chromatogram(data, ax):
+    plot_chromatogram(data, ax)
+
+def plot_chromafeature(chroma, ax=None, fig=None):
     xlabel = 'time'
     ylabel = 'chroma'
     title = 'Chroma feature'
     if ax == None:
-        img = rosa.display.specshow(chroma, y_axis=ylabel, x_axis=xlabel)
+        rosa.display.specshow(chroma, y_axis=ylabel, x_axis=xlabel)
     else:
         img = rosa.display.specshow(chroma, y_axis=ylabel, x_axis=xlabel, ax=ax)
         ax.set(title=title)
+        if fig != None :
+            fig.colorbar(img, ax=ax)
+
+def plotfct_chromafeature(data, sr, ax):
+    chroma = calculate_chroma(data, sr)
+    plot_chromafeature(chroma, ax)
+
+def plot_MFCC(mfccs, sr, ax=None, fig=None):
+    xlabel = 'time'
+    title = 'MFCC'
+    if ax == None:
+        rosa.display.specshow(mfccs, sr=sr, x_axis=xlabel ,ax=ax)
+    else:
+        img = rosa.display.specshow(mfccs, sr=sr, x_axis=xlabel ,ax=ax)
+        ax.set(title=title)
+        if fig != None :
+            fig.colorbar(img, ax=ax)
+
+def plotfct_MFCC(data, sr, ax):
+    mfccs = calculate_MFCC(data, sr)
+    plot_MFCC(mfccs, sr, ax)
     
 
 
@@ -139,28 +175,28 @@ def plot_chromafeature(chroma, ax=None):
                            MAIN
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+if __name__ == "__main__":
+    # Load the audio file
+    data, sample_rate = getaudiofromfile(PATH_NAME)
 
-# Load the audio file
-data, sample_rate = getaudiofromfile(PATH_NAME)
+    # Filter the signal to get rid of all the noises
+    data = Filters.sounddata_filter(data, sample_rate, maxFrequency = CUT_OFF_FREQUENCY)
 
-# Filter the signal to get rid of all the noises
-data = Filters.sounddata_filter(data, sample_rate, maxFrequency = CUT_OFF_FREQUENCY)
+    time = calculate_time(data)
 
-time = calculate_time(data)
+    magnitudes, frequencies = calculate_FFT(data, sample_rate)
 
-magnitudes, frequencies = calculate_FFT(data)
+    # Calculate the highest for a frequency
+    high_freq = calculate_maxFFT(magnitudes, frequencies)
 
-# Calculate the highest for a frequency
-high_freq = calculate_maxFFT(magnitudes, frequencies)
+    # Calculate the angle FFT of the signal
+    # phase = np.angle(data)
 
-# Calculate the angle FFT of the signal
-# phase = np.angle(data)
+    # Calculate the chroma feature
+    chroma = calculate_chroma(data, sample_rate)
+    max_pitch = calculate_maxchroma(chroma)
 
-# Calculate the chroma feature
-chroma = calculate_chroma(data, sample_rate)
-max_pitch = calculate_maxchroma(chroma)
-
-mfccs = calculate_MFCC(data, sample_rate)
+    mfccs = calculate_MFCC(data, sample_rate)
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -168,40 +204,37 @@ mfccs = calculate_MFCC(data, sample_rate)
                            PLOTTING
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+if __name__ == "__main__":
+    # Create the subplot for the graphs
+    # to change the ratio : gridspec_kw={'width_ratios': [1, 2]}
+    fig, axs = plt.subplots(nrows=3, ncols=2, figsize=(9, 6))
+    ((ax1, ax2), (ax3, ax4), (ax5, ax6)) = axs
 
-# Create the subplot for the graphs
-# to change the ratio : gridspec_kw={'width_ratios': [1, 2]}
-fig, axs = plt.subplots(nrows=3, ncols=2, figsize=(9, 6))
-((ax1, ax2), (ax3, ax4), (ax5, ax6)) = axs
+    # Change the two first subplot into 1
+    ax1.remove()
+    ax2.remove()
+    gs = ax2.get_gridspec()
+    ax = fig.add_subplot(gs[0, 0:])
 
-# Change the two first subplot into 1
-ax1.remove()
-ax2.remove()
-gs = ax2.get_gridspec()
-ax = fig.add_subplot(gs[0, 0:])
+    # plot the sound wave
+    plot_wave(time, data, ax)
 
-# plot the sound wave
-plot_wave(time, data, ax)
+    # Plot the FFT
+    ax = ax3
+    plot_FFT(magnitudes, frequencies, ax)
 
-# Plot the FFT
-ax = ax3
-plot_FFT(magnitudes, frequencies, ax)
+    # plot the chromatogram
+    ax = ax4
+    plot_chromatogram(data, ax)
 
-# plot the chromatogram
-ax = ax4
-plot_chromatogram(data, ax)
+    #Displaying  the MFCCs:
+    ax = ax5
+    plot_MFCC(mfccs, sample_rate, ax, fig)
 
-#Displaying  the MFCCs:
-ax = ax5
-img = rosa.display.specshow(mfccs, sr=sample_rate, x_axis='time' ,ax=ax)
-ax.set(title='MFCC')
-fig.colorbar(img, ax=ax)
+    # Displaying the chroma feature
+    ax = ax6
+    plot_chromafeature(chroma, ax, fig)
 
-# Displaying the chroma feature
-ax = ax6
-plot_chromafeature(chroma, ax)
-fig.colorbar(img, ax=ax)
-
-fig.tight_layout()
-fig.suptitle("Study of " + FILE_NAME)
-plt.show()
+    fig.tight_layout()
+    fig.suptitle("Study of " + FILE_NAME)
+    plt.show()
