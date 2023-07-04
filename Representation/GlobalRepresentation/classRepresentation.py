@@ -4,6 +4,11 @@ import librosa as rosa
 import numpy as np
 
 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+                    Interface for all modes
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 class Representation:
     def __init__(self, data, text : str) -> None:
         self.text = text
@@ -43,7 +48,41 @@ class Representation:
         newax = fig.add_subplot(111)
         self.plotfct(audio, sr, newax)
         canva.draw_idle()
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+                           Wave sound
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+class Waveclass(Representation):
+    def __init__(self):
+        super().__init__(self, "Wave")
+
+    def calculate(self, data, sr: int):
+             # Get the duration of the file
+        duration = len(data)
+
+        # Get a list with all the time stamps
+        time = range(duration)
+
+        return time, data 
     
+    def plot(self, x, y , ax) -> None:
+        time = x
+        data = y
+        xlabel = 'Time (s)'
+        ylabel = 'Amplitude'
+        title = 'Wave sound'
+        maxTime = max(time)
+        ylim = max(data) * 1.01
+        self.generic_plot(time, data, ax, xlabel, ylabel, title, 0, maxTime, -ylim, ylim)
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+                           FFT
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 class FFTclass(Representation):
     def __init__(self):
         super().__init__(self, "FFT")
@@ -77,6 +116,13 @@ class FFTclass(Representation):
         high_freq = round(high_freq, 2)
         return high_freq
 
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+                        Chroma feature
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
 class ChromaFeatureclass(Representation):
     def __init__(self):
         super().__init__(self, "Chroma feature")
@@ -104,6 +150,12 @@ class ChromaFeatureclass(Representation):
         return max_pitch
 
 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+                           MFCC
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
 class MFCCclass(Representation):
     def __init__(self):
         super().__init__(self, "MFFC")
@@ -128,6 +180,12 @@ class MFCCclass(Representation):
             rosa.display.specshow(mfccs, sr=sr, x_axis=xlabel ,ax=ax)
             ax.set(title=title)
 
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+                        Chromatogram
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 class Chromatogramclass(Representation):
     def __init__(self):
