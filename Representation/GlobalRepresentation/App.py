@@ -29,12 +29,12 @@ def newwindow():
     menubar = tk.Menu(root)
     filemenu = tk.Menu(menubar, tearoff=0)
     filemenu.add_command(label="Open audio file...", command=browseFiles, accelerator="Ctrl+O")
-    root.bind_all("<Control-o>", lambda event: browseFiles)
+    root.bind_all("<Control-o>", lambda event: browseFiles())
 
     filemenu.add_command(label="Detailed window", command=showAllRepresentation)
 
     filemenu.add_command(label="New window", command=newwindow, accelerator="Ctrl+N")
-    root.bind_all("<Control-n>", lambda event: newwindow)
+    root.bind_all("<Control-n>", lambda event: newwindow())
 
     filemenu.add_command(label="Quit", command=root.destroy, accelerator="Ctrl+W")
     root.bind_all("<Control-w>", lambda event: root.destroy())
@@ -62,7 +62,7 @@ def newwindow():
     mainframe.pack()
 
     # Frame below with the buttons
-    changemodeframe = tk.Frame(root)
+    changemodeframe = tk.Frame(root, bg="white")
 
     button = tk.Button(changemodeframe, text="Wave", command=lambda : wave.changeto(audio, sr, fig, canva))
     button.grid(row=1, column=1)
