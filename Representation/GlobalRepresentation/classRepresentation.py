@@ -173,7 +173,8 @@ class MFCCclass(Representation):
         mfccs = x
         sr = y
         xlabel = 'time'
-        title = 'MFCC'
+        ylabel = 'index'
+        title = 'Mel-frequency cepstrum'
         if ax == None:
             rosa.display.specshow(mfccs, sr=sr, x_axis=xlabel ,ax=ax)
         else:

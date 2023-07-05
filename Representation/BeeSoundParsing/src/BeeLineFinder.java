@@ -2,7 +2,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.*;
 import java.util.ArrayList;
 
 public class BeeLineFinder {
@@ -54,7 +53,7 @@ public class BeeLineFinder {
             System.err.println("Error reading the file: " + e.getMessage());
         }
 
-        // Read the audio file
+        // Write the audio file sliced
         String pathName = "BeeDataset/OnlyBees/";
         for(int i = 0; i < lineWithBees; i++) {
             AudioFileProcessor.copyAudio(audioFilePath,
