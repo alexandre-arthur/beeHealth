@@ -6,12 +6,12 @@ Representation :
 Spectrogram = Chromatogram
 MFCC
 MFCC delta
+Spectral centroid
+ZCR
 
 In progress :
 
 Next : 
-Spectral centroid
-ZCR
 sonograph image
 sonograph image pre-processed via frequency slicing
 Z-Score normalized values
