@@ -1,0 +1,18 @@
+Max et representation
+FFT
+Chromafeature
+
+Representation :
+Spectrogram = Chromatogram
+MFCC
+MFCC delta
+
+In progress :
+
+Next : 
+Spectral centroid
+ZCR
+sonograph image
+sonograph image pre-processed via frequency slicing
+Z-Score normalized values
+Thresholded components
