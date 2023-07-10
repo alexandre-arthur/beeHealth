@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import librosa as rosa
-from scipy import signal
+from scipy import signal    
 import classRepresentation
 
 import Filters
@@ -70,4 +70,4 @@ def showAllRepresentation():
     plt.show()
 
 if __name__ == "__main__":
-    allRepresentation()
+    showAllRepresentation()

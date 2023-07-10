@@ -1,6 +1,5 @@
 import tkinter as tk
 import matplotlib.pyplot as plt
-import re
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from GlobalFiguresBees import * 
 from classRepresentation import * 
@@ -50,21 +49,34 @@ def newwindow():
     wave = Waveclass()
     fft = FFTclass()
     chromafeature = ChromaFeatureclass()
-    chromatogram = Chromatogramclass()
+    spectrogram = Spectrogramclass()
     mfcc = MFCCclass()
+    mfccdelta = MFCCdeltaclass()
+    spectralcentroid = spectralcentroidclass()
 
     # First example on startup
     FILE_NAME = 'Hive3_20_07_2017_QueenBee_H3_audio___06_20_00_21.wav'
     PATH_NAME = 'Representation\BeeDataset\OnlyBees\QueenBee\\' + FILE_NAME
+    PATH_NAME = 'Representation\BeeDataset\OnlyBees\Ionian_mode_C.wav'
     audio, sr = getaudiofromfile(PATH_NAME)
-    fft.plotfct(audio, sr, ax)
+    wave.plotfct(audio, sr, ax)
+
 
     mainframe.pack()
 
     # Frame below with the buttons
     changemodeframe = tk.Frame(root, bg="white")
 
-    button = tk.Button(changemodeframe, text="Wave", command=lambda : wave.changeto(audio, sr, fig, canva))
+    def create_button(mode, row, column):
+        button = tk.Button(changemodeframe, text=mode.text, command=lambda: mode.changeto(audio, sr, fig, canva))
+        button.grid(row=row, column=column)
+
+    existingmode = [wave, fft, chromafeature, spectrogram, mfcc, mfccdelta, spectralcentroid]
+
+    for index, mode in enumerate(existingmode):
+        create_button(mode, row=1, column=index+1)
+
+    """button = tk.Button(changemodeframe, text="Wave", command=lambda : wave.changeto(audio, sr, fig, canva))
     button.grid(row=1, column=1)
 
     button = tk.Button(changemodeframe, text="FFT", command=lambda : fft.changeto(audio, sr, fig, canva))
@@ -73,11 +85,17 @@ def newwindow():
     button = tk.Button(changemodeframe, text="MFCC", command=lambda : mfcc.changeto(audio, sr, fig, canva))
     button.grid(row=1, column=3)
 
-    button = tk.Button(changemodeframe, text="chromatogram", command=lambda : chromatogram.changeto(audio, sr, fig, canva))
+    button = tk.Button(changemodeframe, text="Spectrogram", command=lambda : spectrogram.changeto(audio, sr, fig, canva))
     button.grid(row=1, column=4)
 
     button = tk.Button(changemodeframe, text="Chroma feature", command=lambda : chromafeature.changeto(audio, sr, fig, canva))
     button.grid(row=1, column=5)
+
+    button = tk.Button(changemodeframe, text="MFCCDelta", command=lambda : mfccdelta.changeto(audio, sr, fig, canva))
+    button.grid(row = 1, column=6)
+
+    button = tk.Button(changemodeframe, text="Spectral Centroid", command=lambda : spectralcentroid.changeto(audio, sr, fig, canva))
+    button.grid(row=1, column=7)"""
 
     changemodeframe.pack()
     root.title(FILE_NAME)

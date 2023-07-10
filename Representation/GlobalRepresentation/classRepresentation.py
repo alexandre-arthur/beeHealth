@@ -10,7 +10,7 @@ import numpy as np
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 class Representation:
-    def __init__(self, data, text : str) -> None:
+    def __init__(self, text : str) -> None:
         self.text = text
         pass
 
@@ -41,7 +41,6 @@ class Representation:
     def plotfct(self, data, sr, ax):
         x, y = self.calculate(data, sr)
         self.plot(x, y, ax)
-        pass
 
     def changeto(self, audio, sr, fig, canva):
         fig.clear()
@@ -57,7 +56,7 @@ class Representation:
 
 class Waveclass(Representation):
     def __init__(self):
-        super().__init__(self, "Wave")
+        super().__init__("Wave")
 
     def calculate(self, data, sr: int):
              # Get the duration of the file
@@ -73,7 +72,7 @@ class Waveclass(Representation):
         data = y
         xlabel = 'Time (s)'
         ylabel = 'Amplitude'
-        title = 'Wave sound'
+        title = self.text
         maxTime = max(time)
         ylim = max(data) * 1.01
         self.generic_plot(time, data, ax, xlabel, ylabel, title, 0, maxTime, -ylim, ylim)
@@ -85,7 +84,7 @@ class Waveclass(Representation):
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 class FFTclass(Representation):
     def __init__(self):
-        super().__init__(self, "FFT")
+        super().__init__("FFT")
 
     def calculate(self, data, sr : int):
          # Apply FFT to the audio data
@@ -104,12 +103,12 @@ class FFTclass(Representation):
 
         xlabel = 'Frequency (Hz)'
         ylabel = 'Magnitudes'
-        title = 'FFT'
+        title = self.text
         xlim = CUT_OFF_FREQUENCY
         ylim = max(y) * 1.01
         self.generic_plot(x, y, ax, xlabel, ylabel, title, 0, xlim, 0, ylim)
 
-    def calculate_maxFFT(magnitudes, frequencies) -> float :
+    def calculate_max(magnitudes, frequencies) -> float :
         # Calculate the highest for a frequency
         argmax = np.array(magnitudes).argmax()
         high_freq = abs(frequencies[argmax])
@@ -125,7 +124,7 @@ class FFTclass(Representation):
 
 class ChromaFeatureclass(Representation):
     def __init__(self):
-        super().__init__(self, "Chroma feature")
+        super().__init__("Chroma feature")
 
     def calculate(self, data, sr : int):
         # Calculate the chroma feature
@@ -136,14 +135,14 @@ class ChromaFeatureclass(Representation):
         chroma = x
         xlabel = 'time'
         ylabel = 'chroma'
-        title = 'Chroma feature'
+        title = self.text
         if ax == None:
             rosa.display.specshow(chroma, y_axis=ylabel, x_axis=xlabel)
         else:
             rosa.display.specshow(chroma, y_axis=ylabel, x_axis=xlabel, ax=ax)
             ax.set(title=title)
 
-    def calculate_maxchroma(chroma) -> str :
+    def calculate_max(chroma) -> str :
         sum_chroma = [sum(c) for c in chroma]
         pitches = ['C', 'C#', 'D', 'D#','E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
         max_pitch = pitches[np.argmax(sum_chroma)]
@@ -158,7 +157,7 @@ class ChromaFeatureclass(Representation):
 
 class MFCCclass(Representation):
     def __init__(self):
-        super().__init__(self, "MFFC")
+        super().__init__("MFFC")
     
     def calculate(self, data, sr : int):
         # Let's make and display a mel-scaled power (energy-squared) spectrogram
@@ -173,8 +172,7 @@ class MFCCclass(Representation):
         mfccs = x
         sr = y
         xlabel = 'time'
-        ylabel = 'index'
-        title = 'Mel-frequency cepstrum'
+        title = self.text
         if ax == None:
             rosa.display.specshow(mfccs, sr=sr, x_axis=xlabel ,ax=ax)
         else:
@@ -188,33 +186,75 @@ class MFCCclass(Representation):
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-class Chromatogramclass(Representation):
+class Spectrogramclass(Representation):
     def __init__(self):
-        super().__init__(self, "Chroma feature")
+        super().__init__("Spectrogram")
 
     def calculate(self, data, sr : int):
-        # Calculate the chroma feature
-        chroma = rosa.feature.chroma_stft(y=data, sr=sr)
-        return chroma, None
+        # not useful but necessary
+        return data, sr
     
     def plot(self, x, y , ax):
         data = x
+        sr = y
         xlabel = 'Time'
         ylabel = 'Frequency (Hz)'
-        title = 'Chromatogram'
+        title = self.text
         if ax == None:
-            plt.specgram(data, mode='psd') # psd = power spectral density
+            plt.specgram(data, Fs=sr, mode='psd') # psd = power spectral density
             plt.xlabel(xlabel)
             plt.ylabel(ylabel)
             plt.title(title)
         else:
-            ax.specgram(data, mode='psd') # psd = power spectral density
+            ax.specgram(data, Fs=sr, mode='psd') # psd = power spectral density
             ax.set_xlabel(xlabel)
             ax.set_ylabel(ylabel)
             ax.set_title(title)
 
-    def calculate_maxchroma(chroma) -> str :
+    def calculate_max(chroma) -> str :
         sum_chroma = [sum(c) for c in chroma]
         pitches = ['C', 'C#', 'D', 'D#','E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
         max_pitch = pitches[np.argmax(sum_chroma)]
         return max_pitch
+
+class MFCCdeltaclass(Representation):
+    def __init__(self) -> None:
+        super().__init__("MFCC Delta")
+
+    def calculate(self, data, sr : int):
+        mfcc = rosa.feature.mfcc(y=data, sr=sr)
+        mfcc_delta = rosa.feature.delta(mfcc)
+        # not useful but necessary
+        return mfcc_delta, None
+    
+    def plot(self, x, y , ax):
+        mfcc_delta = x
+        xlabel = 'time'
+        title = self.text
+        if ax == None:
+            rosa.display.specshow(mfcc_delta, ax=ax, x_axis=xlabel)
+        else:
+            rosa.display.specshow(mfcc_delta, ax=ax, x_axis=xlabel)
+            ax.set(title=title)
+
+class spectralcentroidclass(Representation):
+    def __init__(self) -> None:
+        super().__init__("Spectral Centroid")
+
+    def calculate(self, data, sr : int):
+        spectral_centroid = rosa.feature.spectral_centroid(y=data, sr=sr)
+
+        time = list(range(len(spectral_centroid[0])))
+
+        return spectral_centroid, time
+    
+    def plot(self, x, y , ax):
+        spectral_centroid = x[0]
+        time = y
+        xlabel = 'time'
+        ylabel = 'amp'
+        title = self.text
+        if ax == None:
+            self.generic_plot(time, spectral_centroid, ax, xlabel, ylabel, title, 0, max(time), min(spectral_centroid) * 1.01, max(spectral_centroid) * 1.01)
+        else:
+            self.generic_plot(time, spectral_centroid, ax, xlabel, ylabel, title, 0, max(time), min(spectral_centroid) * 1.01, max(spectral_centroid) * 1.01)
