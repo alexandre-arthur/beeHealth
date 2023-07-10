@@ -34,6 +34,13 @@ class Representation:
             ax.set_xlim(xmin, xmax)
             ax.set_ylim(ymin, ymax)
 
+    def generic_simpler_plot(self, x, y, ax, xlabel, ylabel, title):
+        xmin = min(x) * 1.01
+        xmax = max(x) * 1.01
+        ymin = min(y)
+        ymax = max(y)
+        self.generic_plot(x, y, ax, xlabel, ylabel, title, xmin, xmax, ymin, ymax)
+
     @abstractmethod
     def plot(self, x, y , ax) -> None:
         pass
@@ -63,7 +70,7 @@ class Waveclass(Representation):
         duration = len(data)
 
         # Get a list with all the time stamps
-        time = range(duration)
+        time = np.arange(0, duration / sr, 1 / sr)
 
         return time, data 
     
@@ -217,6 +224,12 @@ class Spectrogramclass(Representation):
         max_pitch = pitches[np.argmax(sum_chroma)]
         return max_pitch
 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+                        MFCC Delta
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
 class MFCCdeltaclass(Representation):
     def __init__(self) -> None:
         super().__init__("MFCC Delta")
@@ -237,6 +250,12 @@ class MFCCdeltaclass(Representation):
             rosa.display.specshow(mfcc_delta, ax=ax, x_axis=xlabel)
             ax.set(title=title)
 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+                        Spectral centroid
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
 class spectralcentroidclass(Representation):
     def __init__(self) -> None:
         super().__init__("Spectral Centroid")
@@ -244,17 +263,30 @@ class spectralcentroidclass(Representation):
     def calculate(self, data, sr : int):
         spectral_centroid = rosa.feature.spectral_centroid(y=data, sr=sr)
 
-        time = list(range(len(spectral_centroid[0])))
-
-        return spectral_centroid, time
+        return spectral_centroid, None
     
     def plot(self, x, y , ax):
-        spectral_centroid = x[0]
-        time = y
+        spectral_centroid = rosa.times_like(x)
         xlabel = 'time'
         ylabel = 'amp'
-        title = self.text
-        if ax == None:
-            self.generic_plot(time, spectral_centroid, ax, xlabel, ylabel, title, 0, max(time), min(spectral_centroid) * 1.01, max(spectral_centroid) * 1.01)
-        else:
-            self.generic_plot(time, spectral_centroid, ax, xlabel, ylabel, title, 0, max(time), min(spectral_centroid) * 1.01, max(spectral_centroid) * 1.01)
+        self.generic_simpler_plot(spectral_centroid, x.T, ax, xlabel, ylabel, self.text)
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+                        ZCR
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+class ZCRClass(Representation):
+    def __init__(self) -> None:
+             super().__init__("Zero-crossing rate")
+
+    def calculate(self, data, sr: int):
+        zerocrossingrate = rosa.feature.zero_crossing_rate(data)
+        return zerocrossingrate[0], range(len(zerocrossingrate[0]))
+    
+    def plot(self, x, y , ax):
+        zerocrossingrate = rosa.times_like(x)
+        xlabel = 'time'
+        ylabel = 'Amplitude'
+        self.generic_simpler_plot(zerocrossingrate, x.T, ax, xlabel, ylabel, self.text)
