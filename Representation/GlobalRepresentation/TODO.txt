@@ -8,11 +8,15 @@ MFCC
 MFCC delta
 Spectral centroid
 ZCR
+Constant-Q chromagram
+Variable-Q chromagram
+Chroma Energy Normalized
+spectral bandwidth
+spectral contrast
+spectral flatness
+roll-off frequency  
+tonal centroid features 
 
 In progress :
 
 Next : 
-sonograph image
-sonograph image pre-processed via frequency slicing
-Z-Score normalized values
-Thresholded components
