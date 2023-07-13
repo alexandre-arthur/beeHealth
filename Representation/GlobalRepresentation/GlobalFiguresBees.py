@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import librosa as rosa
 from scipy import signal    
-import classRepresentation
+from classRepresentation import *
 
 import Filters
 
@@ -39,31 +39,46 @@ def showAllRepresentation():
     # Filter the signal to get rid of all the noises
     data = Filters.sounddata_filter(data, sample_rate, maxFrequency = CUT_OFF_FREQUENCY)
 
+    # Call all the different modes
+    wave = Waveclass()
+    fft = FFTclass()
+    chromafeature = ChromaFeatureclass()
+    spectrogram = Spectrogramclass()
+    mfcc = MFCCclass()
+    mfccdelta = MFCCdeltaclass()
+    spectralcentroid = spectralcentroidclass()
+    zcr = ZCRClass()
+    constantq = ConstantQclass()
+    variableq = VariableQclass()
+    energynormalized = EnergyNormalizedclass()
+    #bandwidth = Bandwidthclass()
+
     # Create the subplot for the graphs
     # to change the ratio : gridspec_kw={'width_ratios': [1, 2]}
-    fig, axs = plt.subplots(nrows=3, ncols=2, figsize=(9, 6))
-    ((ax1, ax2), (ax3, ax4), (ax5, ax6)) = axs
+    fig, axs = plt.subplots(nrows=4, ncols=3, figsize=(20, 15))
+    ((ax1, ax2, ax3), (ax4, ax5, ax6), (ax7, ax8, ax0), (ax10, ax11, ax12)) = axs
 
     # Change the two first subplot into 1
-    ax1.remove()
+    """ax1.remove()
     ax2.remove()
     gs = ax2.get_gridspec()
     ax = fig.add_subplot(gs[0, 0:])
+"""
+    wave.plotfct(data, sample_rate, ax1)
 
-    wave = classRepresentation.Waveclass()
-    wave.plotfct(data, sample_rate, ax)
+    # mode with which we can study an audio file
 
-    fft = classRepresentation.FFTclass()
     fft.plotfct(data, sample_rate, ax3)
-
-    chromatogram = classRepresentation.Chromatogramclass()
-    chromatogram.plotfct(data, sample_rate, ax4)
-
-    chromafeature = classRepresentation.ChromaFeatureclass()
+    spectrogram.plotfct(data, sample_rate, ax4)
     chromafeature.plotfct(data, sample_rate, ax5)
-
-    mfcc = classRepresentation.MFCCclass()
     mfcc.plotfct(data, sample_rate, ax6)
+    mfccdelta.plotfct(data, sample_rate, ax7)
+    spectralcentroid.plotfct(data, sample_rate, ax8)
+    zcr.plotfct(data, sample_rate, ax0)
+    constantq.plotfct(data, sample_rate, ax10)
+    variableq.plotfct(data, sample_rate, ax11)
+    energynormalized.plotfct(data, sample_rate, ax12)
+    #bandwidth.plotfct(data, sample_rate, ax2)
 
     fig.tight_layout()
     fig.suptitle("Study of " + FILE_NAME)
