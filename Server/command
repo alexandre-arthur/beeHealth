@@ -1,0 +1,2 @@
+Activer environnement virtuel : . .venv/bin/activate
+Lancer application : flask --app hello run
