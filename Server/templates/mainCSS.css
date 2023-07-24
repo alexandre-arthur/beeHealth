@@ -1,12 +1,21 @@
-body{
+header{
     background-color: bisque;
     text-align: center;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.logo{
+    max-width: 200px; /* Adjust the maximum width as per your requirement */
+    max-height: 100px; /* Adjust the maximum height as per your requirement */
+    display: inline-block;
 }
 
 .nav {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
-    grid-gap: 10px;
+    background-color: bisque;
+    text-align: center;
 }
 
 .navBar{
@@ -14,10 +23,19 @@ body{
     color: black;
     background-color: white;
     padding: 10px;
-    round: 10px;
 }
 
 .navBar:hover{
     background-color: black;
     color: white;
+}
+
+main{
+    background-color: bisque;
+    text-align: center;
+}
+
+footer{
+    background-color: bisque;
+    text-align: center;
 }
