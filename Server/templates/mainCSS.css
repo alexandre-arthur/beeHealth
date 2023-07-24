@@ -1,0 +1,23 @@
+body{
+    background-color: bisque;
+    text-align: center;
+}
+
+.nav {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-gap: 10px;
+}
+
+.navBar{
+    text-decoration: none;
+    color: black;
+    background-color: white;
+    padding: 10px;
+    round: 10px;
+}
+
+.navBar:hover{
+    background-color: black;
+    color: white;
+}
