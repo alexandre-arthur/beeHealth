@@ -3,31 +3,45 @@
 <head>
     <meta charset="utf-8">
     <title>beeHealth</title>
-    <link href="mainCSS.css" rel="stylesheet">
+    <link href="css/mainCSS.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope&family=Montserrat&display=swap" rel="stylesheet">
 </head>
 <body>
     <header>
-        <p>beeHealth website</p>
-        <div class="logo">
-            <img src="logo.png" alt="beeHealth logo">
-        </div>
+        <nav>
+            <div class="logo">
+                <img src="picture/ouluLogo.jpeg" alt="University of Oulu logo">
+                <img src="picture/logo.jpg" alt="beeHealth logo">
+            </div>
+            <a class="mainLink" href="beeHealth_main.html">beeHealth</a>
+            <div class = "test">
+                <a class="link" href="beeHealth_data.html">Data</a>
+                <a class="link" href="beeHealth_about.html">About</a>
+                <a class="link" href="beeHealth_contact.html">Contact</a>
+            </div>
+        </nav>
     </header>
-
-    <nav class="nav">
-        <a class="navBar" href="beeHealth_history.html">History</a>
-        <a class="navBar" href="beeHealth_about.html">About</a>
-        <a class="navBar" href="beeHealth_contact.html">Contact</a>
-    </nav>
 
     <main>
         <section>
-            <p>beeHealth is a website about bees and their health</p>
-            <p>List of the last sound</p>
+            <div class ="introduction">
+                <h1>The project</h1>
+                <p> beeHealth is project to get some information about the health of bee analyse the sound</p>
+                <p> To succes we use some analog mic connected to an esp32. Than we send the data to a flask server</p>
+                <p> The server will analyse the data thank to machine learning</p>
+                <p> We use FFT to analyse the sound in a first time but some other tools could be use to get others informations about the soud</p>
+                <p> The result will be sword in a database and display on a website</p>    
+            </div>
+            <div class="introductionPicture">
+                <img src="picture/beeHive.jpg"alt="bee">
+            </div>
         </section>
     </main>
 
     <footer>
-        <p>beeHealth Footer</p>    
+
     </footer>
 </body>
 </html>
