@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>beeHealth</title>
-    <link href="css/mainCSS.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/mainCSS.css') }}" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Manrope&family=Montserrat&display=swap" rel="stylesheet">
@@ -12,8 +12,8 @@
     <header>
         <nav>
             <div class="logo">
-                <img src="picture/ouluLogo.jpeg" alt="University of Oulu logo">
-                <img src="picture/logo.jpg" alt="beeHealth logo">
+                <img src="{{ url_for('static', filename='picture/ouluLogo.jpeg') }}" alt="University of Oulu logo">
+                <img src="{{ url_for('static', filename='picture/logo.jpg') }}" alt="beeHealth logo">
             </div>
             <a class="mainLink" href="beeHealth_main.html">beeHealth</a>
             <div class = "test">
@@ -26,16 +26,18 @@
 
     <main>
         <section>
-            <div class ="introduction">
+            <div class="introduction">
                 <h1>The project</h1>
-                <p> beeHealth is project to get some information about the health of bee analyse the sound</p>
-                <p> To succes we use some analog mic connected to an esp32. Than we send the data to a flask server</p>
-                <p> The server will analyse the data thank to machine learning</p>
-                <p> We use FFT to analyse the sound in a first time but some other tools could be use to get others informations about the soud</p>
-                <p> The result will be sword in a database and display on a website</p>    
+                <p><strong>BeeHealth</strong> is a project to gather information about the health of bees through sound analysis.</p>
+                <p>To achieve this, we use analog microphones connected to an esp32. The data is then sent to a Flask server for analysis.</p>
+                <p>The server utilizes machine learning techniques, including the Fast Fourier Transform (FFT), to analyze the sound data.</p>
+                <p>Additionally, we may employ other tools to extract further insights from the sound.</p>
+                <p>The results will be stored in a database and displayed on a dedicated website.</p>
+                <div class="endIntroduction"> <strong> BeaHealth team &#128521;</strong></div>
             </div>
+            
             <div class="introductionPicture">
-                <img src="picture/beeHive.jpg"alt="bee">
+                <img src="{{ url_for('static', filename='picture/beeHive.jpg') }}"alt="beeHive">
             </div>
         </section>
     </main>

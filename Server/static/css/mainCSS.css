@@ -53,6 +53,16 @@ body {
     border-radius: 20px;
     padding: 25px;
   }
+
+  .introduction p{
+    text-align: justify;
+  }
+  .introduction strong{
+    font-size: 1.2em;
+  }
+  .endIntroduction{
+    text-align: right;
+  }
   
   .introductionPicture {
     padding-left: 25px;

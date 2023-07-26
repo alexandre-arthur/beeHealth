@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>beeHealth</title>
-    <link href="css/dataCSS.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/dataCSS.css') }}" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Manrope&family=Montserrat&display=swap" rel="stylesheet">
@@ -12,8 +12,8 @@
     <header>
         <nav>
             <div class="logo">
-                <img src="picture/ouluLogo.jpeg" alt="University of Oulu logo">
-                <img src="picture/logo.jpg" alt="beeHealth logo">
+                <img src="{{ url_for('static', filename='picture/ouluLogo.jpeg') }}" alt="University of Oulu logo">
+                <img src="{{ url_for('static', filename='picture/logo.jpg') }}" alt="beeHealth logo">
             </div>
             <a class="mainLink" href="beeHealth_main.html">beeHealth</a>
             <div class = "test">
@@ -33,10 +33,25 @@
                 <p>Analysis</p>
             </div>
         </section>
+        <!-- generate each section for each file we have-->
         <section>
             <div class="soundTable">
                 <audio controls>
-                    <source src="sound/beeSound.wav" type="audio/wav">
+                    <source src="{{ url_for('static', filename='sound/beeSound.wav') }}" type="audio/wav">
+                </audio>
+               <!-- remplace with the good sound file-->
+                <p>13-12-25-07-2023</p>
+                <p>Oulu</p>
+                <div class ="analysis">
+                    <a href="13-12-25-07-2023.html">Click here</a>
+                </div>
+            </div>
+        </section>
+        <!-- the following section is just for testing, delete it later -->
+        <section>
+            <div class="soundTable">
+                <audio controls>
+                    <source src="{{ url_for('static', filename='sound/beeSound.wav') }}" type="audio/wav">
                 </audio>
                 <p>13-12-25-07-2023</p>
                 <p>Oulu</p>
@@ -48,19 +63,7 @@
         <section>
             <div class="soundTable">
                 <audio controls>
-                    <source src="sound/beeSound.wav" type="audio/wav">
-                </audio>
-                <p>13-12-25-07-2023</p>
-                <p>Oulu</p>
-                <div class ="analysis">
-                    <a href="13-12-25-07-2023.html">Click here</a>
-                </div>
-            </div>
-        </section>
-        <section>
-            <div class="soundTable">
-                <audio controls>
-                    <source src="sound/beeSound.wav" type="audio/wav">
+                    <source src="{{ url_for('static', filename='sound/beeSound.wav') }}" type="audio/wav">
                 </audio>
                 <p>13-12-25-07-2023</p>
                 <p>Oulu</p>
