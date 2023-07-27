@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request
 import datetime
 import os
+import shutil
 
 app = Flask(__name__)
 
@@ -31,12 +32,42 @@ def beeHealth_data():
             'link': link
         })
     
+    #give the list a reverse order to have the most recent data first
+    sound_tables.reverse()
+
     # Pass the sound_tables list to the template for rendering
     return render_template('beeHealth_data.html', sound_tables=sound_tables)
+
+def copy_file_in_template_directory(source_file_name, new_file_name):
+    try:
+        # Get the absolute path of the source file
+        source_file_path = os.path.abspath(source_file_name)
+
+        # Get the path of the "templates" folder in the current directory
+        templates_folder_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
+
+        # Get the absolute path of the destination file in the "templates" folder
+        destination_file_path = os.path.join(templates_folder_path, new_file_name)
+
+        # Copy the source file to the destination path
+        shutil.copy(source_file_path, destination_file_path)
+
+        print(f"The file '{source_file_name}' has been copied as '{new_file_name}' in the 'templates' folder.")
+    except FileNotFoundError:
+        print("The source file does not exist.")
+    except PermissionError:
+        print("Permission denied to copy the file.")
+    except Exception as e:
+        print(f"An error occurred: {e}")
 
 # Generate the route for each analysis HTML file
 @app.route('/<folder_name>.html')
 def beeHealth_analysis(folder_name):
+    source_file_name = "templateAnalysis.html"
+    new_file_name = folder_name + ".html"
+
+    copy_file_in_template_directory(source_file_name, new_file_name)
+   
     return render_template(folder_name + '.html')
 
 @app.route('/beeHealth_about.html')
@@ -73,7 +104,7 @@ def upload():
     
     # Save the WAV file inside the new folder
     wav_file.save(os.path.join(folder_path, filename))
-    
+
     return 'File successfully uploaded', 200
 
 if __name__ == '__main__':
