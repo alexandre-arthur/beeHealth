@@ -16,7 +16,7 @@
                 <img src="{{ url_for('static', filename='picture/logo.jpg') }}" alt="beeHealth logo">
             </div>
             <a class="mainLink" href="beeHealth_main.html">beeHealth</a>
-            <div class = "test">
+            <div class="test">
                 <a class="link" href="beeHealth_data.html">Data</a>
                 <a class="link" href="beeHealth_about.html">About</a>
                 <a class="link" href="beeHealth_contact.html">Contact</a>
@@ -33,45 +33,23 @@
                 <p>Analysis</p>
             </div>
         </section>
-        <!-- generate each section for each file we have-->
+        <!-- Generate a section for each sound table -->
+        {% for table in sound_tables %}
         <section>
             <div class="soundTable">
                 <audio controls>
-                    <source src="{{ url_for('static', filename='sound/beeSound.wav') }}" type="audio/wav">
+                    <!-- Update the source URL to point to the correct audio file -->
+                    <source src="{{ url_for('static', filename='uploads/' + table.time + '/'+table.time +'_beeSound.wav') }}" type="audio/wav">
                 </audio>
-               <!-- remplace with the good sound file-->
-                <p>13-12-25-07-2023</p>
-                <p>Oulu</p>
-                <div class ="analysis">
-                    <a href="13-12-25-07-2023.html">Click here</a>
+                <p>{{ table.time }}</p>
+                <p>{{ table.location }}</p>
+                <div class="analysis">
+                    <!-- Update the link URL to point to the correct analysis HTML file -->
+                    <a href="{{ url_for('beeHealth_analysis', folder_name=table.time + '.html') }}">Click here</a>
                 </div>
             </div>
         </section>
-        <!-- the following section is just for testing, delete it later -->
-        <section>
-            <div class="soundTable">
-                <audio controls>
-                    <source src="{{ url_for('static', filename='sound/beeSound.wav') }}" type="audio/wav">
-                </audio>
-                <p>13-12-25-07-2023</p>
-                <p>Oulu</p>
-                <div class ="analysis">
-                    <a href="13-12-25-07-2023.html">Click here</a>
-                </div>
-            </div>
-        </section>
-        <section>
-            <div class="soundTable">
-                <audio controls>
-                    <source src="{{ url_for('static', filename='sound/beeSound.wav') }}" type="audio/wav">
-                </audio>
-                <p>13-12-25-07-2023</p>
-                <p>Oulu</p>
-                <div class ="analysis">
-                    <a href="13-12-25-07-2023.html">Click here</a>
-                </div>
-            </div>
-        </section>
+        {% endfor %}
     </main>
 
     <footer>
