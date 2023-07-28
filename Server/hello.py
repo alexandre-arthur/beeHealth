@@ -33,7 +33,7 @@ def beeHealth_data():
         })
     
     #give the list a reverse order to have the most recent data first
-    sound_tables.reverse()
+    #sound_tables.reverse()
 
     # Pass the sound_tables list to the template for rendering
     return render_template('beeHealth_data.html', sound_tables=sound_tables)
@@ -68,7 +68,7 @@ def beeHealth_analysis(folder_name):
 
     copy_file_in_template_directory(source_file_name, new_file_name)
    
-    return render_template(folder_name + '.html')
+    return render_template(folder_name + '.html', path='uploads/' + folder_name)
 
 @app.route('/beeHealth_about.html')
 def beeHealth_about():
