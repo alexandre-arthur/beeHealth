@@ -55,8 +55,6 @@ class Representation:
                 ax.set_xlabel(xlabel)
             ax.set_title(title)
 
-
-
     @abstractmethod
     def plot(self, x, y , ax) -> None:
         pass
@@ -70,6 +68,15 @@ class Representation:
         newax = fig.add_subplot(111)
         self.plotfct(audio, sr, newax)
         canva.draw_idle()
+
+    def createImageFromPlot(self, pathAndFile, fig):
+        fig.savefig(pathAndFile)
+
+    def createImage(self, pathAndFile, data, sr):
+        fig, ax = plt.subplots(1, 1)
+        self.plotfct(data, sr, ax)
+        self.createImageFromPlot(pathAndFile, fig)
+        
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
@@ -507,16 +514,18 @@ class TonalCentroidclass(Representation):
 if __name__ == "__main__":
     func = ChromaFeatureclass()
 
+
     FILE_NAME = 'Hive3_20_07_2017_QueenBee_H3_audio___06_20_00_21.wav'
     PATH_NAME = 'Representation\BeeDataset\OnlyBees\QueenBee\\' + FILE_NAME
     PATH_NAME = 'Representation\BeeDataset\OnlyBees\Ionian_mode_C.wav'
     # Create a new figure with only one axes
-    fig, ax = plt.subplots(1, 1, figsize=(10, 5))
+    #fig, ax = plt.subplots(1, 1, figsize=(10, 5))
     # Create a new representation
     representation = func
     # Load the audio file
     data, sr = rosa.load(PATH_NAME)
+    func.getPyPlot(data, sr)
     # Calculate the representation
-    representation.plotfct(data, sr, ax)
+    #representation.plotfct(data, sr, ax)
     # Show the plot
-    plt.show()
+    #plt.show()
