@@ -189,7 +189,7 @@ def newwindow():
 
     # mode with which we can study an audio file
     #existingmode = [wave, fft, chromafeature, spectrogram, mfcc, mfccdelta, spectralcentroid, zcr, constantq, variableq, energynormalized, bandwidth, spectralflatness, spectralrolloff, tonalCentroid]
-    existingmode = [wave, fft, bandwidth, zcr, spectralflatness, spectralrolloff, spectrogram, chromafeature, energynormalized, mfcc, mfccdelta, constantq, variableq, spectralcontrast, tonalCentroid]
+    existingmode = [wave, fft, bandwidth, zcr, spectralflatness, spectralrolloff, spectralcentroid, spectrogram, chromafeature, energynormalized, mfcc, mfccdelta, constantq, variableq, spectralcontrast, tonalCentroid]
     # Creating the buttons
     for index, mode in enumerate(existingmode):
         create_button(mode, row=index+1, column=1)
