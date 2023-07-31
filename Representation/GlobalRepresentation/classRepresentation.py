@@ -59,7 +59,7 @@ class Representation:
     def plot(self, x, y , ax) -> None:
         pass
 
-    def plotfct(self, data, sr, ax):
+    def plotfct(self, data, sr, ax = None):
         x, y = self.calculate(data, sr)
         self.plot(x, y, ax)
 
