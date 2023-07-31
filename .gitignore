@@ -1,3 +1,5 @@
 /Representation/Audio/
 /Representation/BeeDataset/FromWeb/
 /DeepLearning/NeuralHiveWork/HugeCSVHolder/
+/Server/.venv
+/Server/static/uploads

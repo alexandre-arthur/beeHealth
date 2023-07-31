@@ -2,6 +2,8 @@ from flask import Flask, render_template, request
 import datetime
 import os
 import shutil
+import librosa
+import globalClassRepresentation as gcr
 
 app = Flask(__name__)
 
@@ -60,6 +62,13 @@ def copy_file_in_template_directory(source_file_name, new_file_name):
     except Exception as e:
         print(f"An error occurred: {e}")
 
+def generateFFT(folder_name): 
+    fft =  cr.FFTclass() 
+    data, sampleRate = librosa.load('static/uploads/' + folder_name + '/' + folder_name + '_beeSound.wav')
+    fft.createImage('static/uploads/' + folder_name+'/'+'fft.png', data, sampleRate)
+
+
+
 # Generate the route for each analysis HTML file
 @app.route('/<folder_name>.html')
 def beeHealth_analysis(folder_name):
@@ -67,7 +76,11 @@ def beeHealth_analysis(folder_name):
     new_file_name = folder_name + ".html"
 
     copy_file_in_template_directory(source_file_name, new_file_name)
-   
+
+    generatePictures = gcr.GlobalClassRepresentation()
+    generatePictures.getAllPictures('static/uploads/' + folder_name + '/', folder_name + '_beeSound.wav')
+
+
     return render_template(folder_name + '.html', path='uploads/' + folder_name)
 
 @app.route('/beeHealth_about.html')
