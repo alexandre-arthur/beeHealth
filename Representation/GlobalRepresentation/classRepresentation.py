@@ -11,13 +11,18 @@ from scipy.interpolate import make_interp_spline, BSpline
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 class Representation:
-    def __init__(self, text : str, description : str) -> None:
-        self.text = text
+    def __init__(self, title : str, description : str) -> None:
+        # Initialize the class with a title and a description
+        # @arguments : - title : title of the Representation mode
+        #              - description : description of the Representation mode
+        self.title = title
         self.description = description
         pass
 
     @abstractmethod
-    def calculate(self, data, sr : int):
+    def calculate(self, data, sampleRate : int):
+        # Calculate the data needed for the representation
+        # @arguments : - data : 
         pass
 
     def generic_plot(self, x, y, ax, xlabel, ylabel, xmin, xmax, ymin, ymax):
@@ -25,14 +30,14 @@ class Representation:
             plt.plot(x, y)
             plt.xlabel(xlabel)
             plt.ylabel(ylabel)
-            plt.title(self.text)
+            plt.title(self.title)
             plt.xlim(xmin, xmax)
             plt.ylim(ymin, ymax)
         else:
             ax.plot(x, y)
             ax.set_xlabel(xlabel)
             ax.set_ylabel(ylabel)
-            ax.set_title(self.text)
+            ax.set_title(self.title)
             ax.set_xlim(xmin, xmax)
             ax.set_ylim(ymin, ymax)
 
@@ -43,12 +48,12 @@ class Representation:
         ymax = max(y)
         self.generic_plot(x, y, ax, xlabel, ylabel, xmin, xmax, ymin, ymax)
 
-    def generic_specshow(self, x, y_axis=None, x_axis=None, ylabel=None, xlabel=None, sr=22050, ax=None):
-        title = self.text
+    def generic_specshow(self, x, y_axis=None, x_axis=None, ylabel=None, xlabel=None, sampleRate=22050, ax=None):
+        title = self.title
         if ax == None:
-            rosa.display.specshow(x, y_axis=y_axis, x_axis=x_axis, sr=sr)
+            rosa.display.specshow(x, y_axis=y_axis, x_axis=x_axis, sr=sampleRate)
         else:
-            rosa.display.specshow(x, y_axis=y_axis, x_axis=x_axis, sr=sr, ax=ax)
+            rosa.display.specshow(x, y_axis=y_axis, x_axis=x_axis, sr=sampleRate, ax=ax)
             if ylabel != None:
                 ax.set_ylabel(ylabel)
             if xlabel != None:
@@ -59,22 +64,22 @@ class Representation:
     def plot(self, x, y , ax) -> None:
         pass
 
-    def plotfct(self, data, sr, ax = None):
-        x, y = self.calculate(data, sr)
+    def plotfct(self, data, sampleRate, ax = None):
+        x, y = self.calculate(data, sampleRate)
         self.plot(x, y, ax)
 
-    def changeto(self, audio, sr, fig, canva):
+    def changeto(self, audio, sampleRate, fig, canva):
         fig.clear()
         newax = fig.add_subplot(111)
-        self.plotfct(audio, sr, newax)
+        self.plotfct(audio, sampleRate, newax)
         canva.draw_idle()
 
     def createImageFromPlot(self, pathAndFile, fig):
         fig.savefig(pathAndFile)
 
-    def createImage(self, pathAndFile, data, sr):
+    def createImage(self, pathAndFile, data, sampleRate):
         fig, ax = plt.subplots(1, 1)
-        self.plotfct(data, sr, ax)
+        self.plotfct(data, sampleRate, ax)
         self.createImageFromPlot(pathAndFile, fig)
         
 
@@ -89,12 +94,12 @@ class Waveclass(Representation):
         desc = "Amplitude/Time : The waveform is the shape of the sound wave as it passes through the air. It is a graph of pressure against time. The waveform shows the changes in amplitude over a certain amount of time."
         super().__init__("Wave", desc)
 
-    def calculate(self, data, sr: int):
+    def calculate(self, data, sampleRate: int):
              # Get the duration of the file
         duration = len(data)
 
         # Get a list with all the time stamps
-        time = np.arange(0, duration / sr, 1 / sr)
+        time = np.arange(0, duration / sampleRate, 1 / sampleRate)
 
         return time, data 
     
@@ -117,7 +122,7 @@ class FFTclass(Representation):
         desc = "Magnitudes/Frequency : The FFT is a mathematical algorithm that determines the frequencies that make up the signal."
         super().__init__("FFT", desc)
 
-    def calculate(self, data, sr : int):
+    def calculate(self, data, sampleRate : int):
          # Apply FFT to the audio data
         fft_data = np.fft.fft(data)
 
@@ -125,7 +130,7 @@ class FFTclass(Representation):
         magnitudes = np.abs(fft_data)
 
         # Generate the corresponding frequencies for the FFT coefficients
-        frequencies = np.fft.fftfreq(len(magnitudes), 1 / sr)
+        frequencies = np.fft.fftfreq(len(magnitudes), 1 / sampleRate)
 
         return frequencies, magnitudes
     
@@ -139,7 +144,7 @@ class FFTclass(Representation):
         self.generic_plot(x, y, ax, xlabel, ylabel, 0, xlim, 0, ylim)
         maxFreq = self.calculate_max(y, x)
         ax.plot(maxFreq, max(y), 'ro')
-        ax.text(maxFreq, max(y), '  Max frequency: ' + str(maxFreq) + ' Hz', horizontalalignment='left', verticalalignment='bottom')
+        ax.title(maxFreq, max(y), '  Max frequency: ' + str(maxFreq) + ' Hz', horizontalalignment='left', verticalalignment='bottom')
 
     def calculate_max(self, magnitudes, frequencies) -> float :
         # Calculate the highest for a frequency
@@ -159,13 +164,13 @@ class Bandwidthclass(Representation):
         desc = "Amplitude/Time : The bandwidth is the range of frequencies that are present in the sound. It is calculated as the difference between the highest and lowest frequencies in the sound."
         super().__init__("Bandwidth", desc)
 
-    def calculate(self, data, sr: int):
-        bandwidth = rosa.feature.spectral_bandwidth(y=data, sr=sr)
-        return bandwidth, sr
+    def calculate(self, data, sampleRate: int):
+        bandwidth = rosa.feature.spectral_bandwidth(y=data, sr=sampleRate)
+        return bandwidth, sampleRate
     
     def plot(self, x, y, ax) -> None:
         bandwidth = rosa.times_like(x)
-        sr = y
+        sampleRate = y
         xlabel = 'Time (s)'
         ylabel = 'Amplitude'
         self.generic_simpler_plot(bandwidth, x.T, ax, xlabel, ylabel)
@@ -181,7 +186,7 @@ class ZCRClass(Representation):
         desc = "Amplitude/Time : The zero-crossing rate is the rate of sign-changes along a signal, i.e., the rate at which the signal changes from positive to negative or back."
         super().__init__("Zero-crossing rate", desc)
 
-    def calculate(self, data, sr: int):
+    def calculate(self, data, sampleRate: int):
         zerocrossingrate = rosa.feature.zero_crossing_rate(data)
         return zerocrossingrate[0], range(len(zerocrossingrate[0]))
     
@@ -203,16 +208,16 @@ class SpectralFlatnessclass(Representation):
         desc = "Amplitude/Time : The spectral flatness is a measure to quantify how much noise-like a sound is, as opposed to being tone-like."
         super().__init__("Spectral Flatness", desc)
 
-    def calculate(self, data, sr: int):
+    def calculate(self, data, sampleRate: int):
         spectral_flatness = rosa.feature.spectral_flatness(y=data)
-        return spectral_flatness, sr
+        return spectral_flatness, sampleRate
     
     def plot(self, x, y, ax) -> None:
         spectral_flatness = rosa.times_like(x)
-        sr = y
+        sampleRate = y
         xlabel = 'Time (s)'
         ylabel = 'Amplitude'
-        title = self.text
+        title = self.title
         self.generic_simpler_plot(spectral_flatness, x.T, ax, xlabel, ylabel)
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -226,13 +231,13 @@ class SpectralRolloffclass(Representation):
         desc = "Frequency/Time : The roll-off frequency is the frequency below which a specified percentage of the total spectral energy, e.g. 85%, lies."
         super().__init__("Roll Off Frequency", desc)
 
-    def calculate(self, data, sr: int):
-        roll_off_frequency = rosa.feature.spectral_rolloff(y=data, sr=sr)
-        return roll_off_frequency, sr
+    def calculate(self, data, sampleRate: int):
+        roll_off_frequency = rosa.feature.spectral_rolloff(y=data, sr=sampleRate)
+        return roll_off_frequency, sampleRate
     
     def plot(self, x, y, ax) -> None:
         roll_off_frequency = rosa.times_like(x)
-        sr = y
+        sampleRate = y
         xlabel = 'Time (s)'
         ylabel = 'Frequency (Hz)'
         self.generic_simpler_plot(roll_off_frequency, x.T, ax, xlabel, ylabel)
@@ -248,23 +253,23 @@ class Spectrogramclass(Representation):
         desc = "Frequency/Time : The spectrogram is a visual representation of the spectrum of frequencies of a signal as it varies with time."
         super().__init__("Spectrogram", desc)
 
-    def calculate(self, data, sr : int):
+    def calculate(self, data, sampleRate : int):
         # not useful but necessary
-        return data, sr
+        return data, sampleRate
     
     def plot(self, x, y , ax):
         data = x
-        sr = y
+        sampleRate = y
         xlabel = 'Time (s)'
         ylabel = 'Frequency (Hz)'
-        title = self.text
+        title = self.title
         if ax == None:
-            plt.specgram(data, Fs=sr, mode='psd') # psd = power spectral density
+            plt.specgram(data, Fs=sampleRate, mode='psd') # psd = power spectral density
             plt.xlabel(xlabel)
             plt.ylabel(ylabel)
             plt.title(title)
         else:
-            ax.specgram(data, Fs=sr, mode='psd') # psd = power spectral density
+            ax.specgram(data, Fs=sampleRate, mode='psd') # psd = power spectral density
             ax.set_xlabel(xlabel)
             ax.set_ylabel(ylabel)
             ax.set_title(title)
@@ -287,17 +292,17 @@ class ChromaFeatureclass(Representation):
         desc = "Pitch/Time : The chroma feature is a representation of the spectral energy where the bins represent the 12 equal-tempered pitch classes of western-type music (semitone spacing)."
         super().__init__("Chroma feature", desc)
 
-    def calculate(self, data, sr : int):
+    def calculate(self, data, sampleRate : int):
         # Calculate the chroma feature
-        chroma = rosa.feature.chroma_stft(y=data, sr=sr)
-        return chroma, sr
+        chroma = rosa.feature.chroma_stft(y=data, sr=sampleRate)
+        return chroma, sampleRate
 
     def plot(self, x, y , ax):
-        sr = y
+        sampleRate = y
         chroma = x
         xlabel = 'Time (s)'
         ylabel = 'Pitch class'
-        self.generic_specshow(chroma, y_axis='chroma', x_axis='time', ylabel=ylabel, xlabel=xlabel, sr=sr, ax=ax)
+        self.generic_specshow(chroma, y_axis='chroma', x_axis='time', ylabel=ylabel, xlabel=xlabel, sampleRate=sampleRate, ax=ax)
         self.maxEachpoint(chroma, ax)
 
     def calculate_max(chroma) -> str :
@@ -321,7 +326,7 @@ class ChromaFeatureclass(Representation):
 
 
         #ax.plot(x, y, 'r')
-        print(y)
+        #print(y)
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -335,16 +340,16 @@ class EnergyNormalizedclass(Representation):
         desc = "Chroma/Time : "
         super().__init__("Energy Normalized", desc)
 
-    def calculate(self, data, sr: int):
-        energy = rosa.feature.chroma_cens(y=data, sr=sr)
-        return energy, sr
+    def calculate(self, data, sampleRate: int):
+        energy = rosa.feature.chroma_cens(y=data, sr=sampleRate)
+        return energy, sampleRate
 
     def plot(self, x, y, ax) -> None:
         energy = x
-        sr = y
+        sampleRate = y
         xlabel = 'Time (s)'
         ylabel = 'Chroma'
-        self.generic_specshow(energy, y_axis='chroma', x_axis='time', ylabel=ylabel, xlabel=xlabel, sr=sr, ax=ax)
+        self.generic_specshow(energy, y_axis='chroma', x_axis='time', ylabel=ylabel, xlabel=xlabel, sampleRate=sampleRate, ax=ax)
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -358,21 +363,21 @@ class MFCCclass(Representation):
         desc = "Frequency/Time : The mel-frequency cepstrum (MFC) is a representation of the short-term power spectrum of a sound, based on a linear cosine transform of a log power spectrum on a nonlinear mel scale of frequency."
         super().__init__("MFFC", desc)
     
-    def calculate(self, data, sr : int):
+    def calculate(self, data, sampleRate : int):
         # Let's make and display a mel-scaled power (energy-squared) spectrogram
-        S = rosa.feature.melspectrogram(y=data, sr=sr, n_mels=128)
+        S = rosa.feature.melspectrogram(y=data, sr=sampleRate, n_mels=128)
 
         # Convert to log scale (dB). We'll use the peak power as reference.
         mfccs = rosa.amplitude_to_db(S, ref=np.max)
 
-        return mfccs, sr
+        return mfccs, sampleRate
     
     def plot(self, x, y , ax):
         mfccs = x
-        sr = y
+        sampleRate = y
         xlabel = 'Time (s)'
         ylabel = 'Frequency (Hz)'
-        self.generic_specshow(mfccs, y_axis='mel', x_axis='time', ylabel=ylabel, xlabel=xlabel, sr=sr, ax=ax)
+        self.generic_specshow(mfccs, y_axis='mel', x_axis='time', ylabel=ylabel, xlabel=xlabel, sampleRate=sampleRate, ax=ax)
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
@@ -385,18 +390,18 @@ class MFCCdeltaclass(Representation):
         desc = "Frequency/Time : "
         super().__init__("MFCC Delta", desc)
 
-    def calculate(self, data, sr : int):
-        mfcc = rosa.feature.mfcc(y=data, sr=sr)
+    def calculate(self, data, sampleRate : int):
+        mfcc = rosa.feature.mfcc(y=data, sr=sampleRate)
         mfcc_delta = rosa.feature.delta(mfcc)
         # not useful but necessary
-        return mfcc_delta, sr
+        return mfcc_delta, sampleRate
     
     def plot(self, x, y , ax):
         mfcc_delta = x
-        sr = y
+        sampleRate = y
         xlabel = 'Time (s)'
         ylabel = 'Frequency (Hz)'
-        self.generic_specshow(mfcc_delta, y_axis='mel', x_axis='time', ylabel=ylabel, xlabel=xlabel, sr=sr, ax=ax)
+        self.generic_specshow(mfcc_delta, y_axis='mel', x_axis='time', ylabel=ylabel, xlabel=xlabel, sampleRate=sampleRate, ax=ax)
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
@@ -409,8 +414,8 @@ class spectralcentroidclass(Representation):
         desc = "Amplitude/Time : The spectral centroid indicates at which frequency the energy of a spectrum is centered upon or in other words It indicates where the ”center of mass” for a sound is located."
         super().__init__("Spectral Centroid", desc)
 
-    def calculate(self, data, sr : int):
-        spectral_centroid = rosa.feature.spectral_centroid(y=data, sr=sr)
+    def calculate(self, data, sampleRate : int):
+        spectral_centroid = rosa.feature.spectral_centroid(y=data, sr=sampleRate)
 
         return spectral_centroid, None
     
@@ -431,16 +436,16 @@ class ConstantQclass(Representation):
         desc = "Chroma/Time : "
         super().__init__("Constant Q", desc)
 
-    def calculate(self, data, sr: int):
-        constantq = rosa.cqt(data, sr=sr)
-        return constantq, sr
+    def calculate(self, data, sampleRate: int):
+        constantq = rosa.cqt(data, sr=sampleRate)
+        return constantq, sampleRate
     
     def plot(self, x, y , ax):
         constantq = x
-        sr = y
+        sampleRate = y
         xlabel = 'Time (s)'
         ylabel = 'Chroma'
-        self.generic_specshow(constantq, y_axis='chroma', x_axis='time', ylabel=ylabel, xlabel=xlabel, sr=sr, ax=ax)
+        self.generic_specshow(constantq, y_axis='chroma', x_axis='time', ylabel=ylabel, xlabel=xlabel, sampleRate=sampleRate, ax=ax)
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
@@ -453,16 +458,16 @@ class VariableQclass(Representation):
         desc = "Chroma/Time : "
         super().__init__("Variable Q", desc)
 
-    def calculate(self, data, sr: int):
-        chroma_vq = rosa.vqt(data, sr=sr)
-        return chroma_vq, sr
+    def calculate(self, data, sampleRate: int):
+        chroma_vq = rosa.vqt(data, sr=sampleRate)
+        return chroma_vq, sampleRate
     
     def plot(self, x, y , ax):
         chroma_vq = x
-        sr = y
+        sampleRate = y
         xlabel = 'Time (s)'
         ylabel = 'Chroma_fjs'
-        self.generic_specshow(chroma_vq, y_axis='chroma', x_axis='time', ylabel=ylabel, xlabel=xlabel, sr=sr, ax=ax)
+        self.generic_specshow(chroma_vq, y_axis='chroma', x_axis='time', ylabel=ylabel, xlabel=xlabel, sampleRate=sampleRate, ax=ax)
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
@@ -475,16 +480,16 @@ class SpectralContrastclass(Representation):
         desc = "Frequency/Time : "
         super().__init__("Spectral Contrast", desc)
     
-    def calculate(self, data, sr: int):
-        spectral_contrast = rosa.feature.spectral_contrast(y=data, sr=sr)
-        return spectral_contrast, sr
+    def calculate(self, data, sampleRate: int):
+        spectral_contrast = rosa.feature.spectral_contrast(y=data, sr=sampleRate)
+        return spectral_contrast, sampleRate
     
     def plot(self, x, y, ax) -> None:
         spectral_contrast = x
-        sr = y
+        sampleRate = y
         xlabel = 'Time (s)'
         ylabel = 'Frequency bands'
-        self.generic_specshow(spectral_contrast, y_axis='log', x_axis='time', ylabel=ylabel, xlabel=xlabel, sr=sr, ax=ax)
+        self.generic_specshow(spectral_contrast, y_axis='log', x_axis='time', ylabel=ylabel, xlabel=xlabel, sampleRate=sampleRate, ax=ax)
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -498,16 +503,16 @@ class TonalCentroidclass(Representation):
         desc = "Tonnetz/Time : "
         super().__init__("Tonal Centroid", desc)
 
-    def calculate(self, data, sr: int):
-        tonal_centroid = rosa.feature.tonnetz(y=data, sr=sr)
-        return tonal_centroid, sr
+    def calculate(self, data, sampleRate: int):
+        tonal_centroid = rosa.feature.tonnetz(y=data, sr=sampleRate)
+        return tonal_centroid, sampleRate
     
     def plot(self, x, y, ax) -> None:
         tonal_centroid = x
-        sr = y
+        sampleRate = y
         xlabel = 'Time (s)'
         ylabel = 'Tonnetz'
-        self.generic_specshow(tonal_centroid, y_axis='tonnetz', x_axis='time', ylabel=ylabel, xlabel=xlabel, sr=sr, ax=ax)
+        self.generic_specshow(tonal_centroid, y_axis='tonnetz', x_axis='time', ylabel=ylabel, xlabel=xlabel, sampleRate=sampleRate, ax=ax)
 
 
 
@@ -523,9 +528,9 @@ if __name__ == "__main__":
     # Create a new representation
     representation = func
     # Load the audio file
-    data, sr = rosa.load(PATH_NAME)
-    func.getPyPlot(data, sr)
+    data, sampleRate = rosa.load(PATH_NAME)
+    func.plotfct(data, sampleRate)
     # Calculate the representation
-    #representation.plotfct(data, sr, ax)
+    #representation.plotfct(data, sampleRate, ax)
     # Show the plot
-    #plt.show()
+    plt.show()
