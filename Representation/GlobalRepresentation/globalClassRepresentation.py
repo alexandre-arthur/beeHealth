@@ -31,15 +31,14 @@ class GlobalClassRepresentation():
         # @return : - modes : list of the modes
         return self.existingMode
 
-    def getAllPictures(self, path : str, verbose : bool = False):
+    def getAllPictures(self, path : str, audioFileName, verbose : bool = False):
         # Get all the pictures in a folder
         # @arguments : - path : path to the folder
         #              - verbose : do we want to print or not (default : False)
         
 
         # get the audio from the wav file 
-        data, sampleRate = rosa.load("Representation/Audio/AudioLessThan2Mins/Abeille1.wav")
-        #data, sampleRate = rosa.load(path)
+        data, sampleRate = rosa.load(path + audioFileName)
 
         for mode in self.existingMode:
             filename = path + mode.getTitle().replace(" ", "_") + ".png"
