@@ -150,7 +150,7 @@ class FFTclass(Representation):
         self.generic_plot(x, y, ax, xlabel, ylabel, 0, xlim, 0, ylim)
         maxFreq = self.calculate_max(y, x)
         ax.plot(maxFreq, max(y), 'ro')
-        ax.title(maxFreq, max(y), '  Max frequency: ' + str(maxFreq) + ' Hz', horizontalalignment='left', verticalalignment='bottom')
+        ax.text(maxFreq, max(y), '  Max frequency: ' + str(maxFreq) + ' Hz', horizontalalignment='left', verticalalignment='bottom')
 
     def calculate_max(self, magnitudes, frequencies) -> float :
         # Calculate the highest for a frequency
