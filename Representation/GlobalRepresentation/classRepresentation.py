@@ -64,6 +64,12 @@ class Representation:
     def plot(self, x, y , ax) -> None:
         pass
 
+    def getDescription(self) -> str:
+        return self.description
+    
+    def getTitle(self) -> str:
+        return self.title
+
     def plotfct(self, data, sampleRate, ax = None):
         x, y = self.calculate(data, sampleRate)
         self.plot(x, y, ax)
