@@ -57,5 +57,3 @@ if __name__ == "__main__" :
     path = "Representation/GlobalRepresentation/Test/"
     gcr = GlobalClassRepresentation()
     gcr.getAllPictures(path, verbose=True)
-
-
