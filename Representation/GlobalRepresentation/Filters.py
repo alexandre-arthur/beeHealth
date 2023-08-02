@@ -1,30 +1,54 @@
 from scipy import signal
 
-# Suppress all the freq at a notch_freq
-def notch_filter(y_pure, samp_freq : int, notch_freq : int) :
-    # Create/view notch filter
-    # Frequency to be removed from signal (Hz)
-    quality_factor = 30.0  # Quality factor
-    b_notch, a_notch = signal.iirnotch(notch_freq, quality_factor, samp_freq)
+def notchFilter(soundData, notchFreq : int, sampleRate : int = 44100, qualityFactor : float = 30.0) :
+    # Delete a specific frequency from a sound data
+    # @arguments : - soundData : sound data to filter
+    #              - notchFreq : frequency to delete
+    #              - sampleRate : sample rate of the sound data (default : 44100 >>> For Audio sounds)
+    #              - qualityFactor : quality factor of the filter (default : 30.0)
+    # @return : sound data without the frequency
+
+
+    # Create the notch filter
+    bNotch, aNotch = signal.iirnotch(notchFreq, qualityFactor, sampleRate)
 
     # apply notch filter to signal
-    y_notched = signal.filtfilt(b_notch, a_notch, y_pure)
-    return y_notched
+    soundNotched = signal.filtfilt(bNotch, aNotch, soundData)
+    return soundNotched
 
-# Delete the sepecific frequency from a sound data and add a low pass filter at maxFrquency
-def sounddata_filter(data, sample_rate : int, maxFrequency : int = None, freq_filter : list | int = None):
+
+def soundDataFilter(data, sampleRate : int, maxFrequency : int = None, minFrequency : int = None, freqFilter : list | int = None, filterOrder : int = 8):
+    # Filter a sound data with a low pass filter and a notch filter (specific frequency)
+    # @arguments : - data : sound data to filter
+    #              - sampleRate : sample rate of the sound data (default : 44100 >>> For Audio sounds)
+    #              - maxFrequency : maximum frequency to keep (default : None >>> No filter)
+    #              - minFrequency : minimum frequency to keep (default : None >>> No filter)
+    #              - freqFilter : frequency to delete (default : None >>> No filter)
+    # @return : sound data filtered
+    # @raise : Exception if maxFrequency is not an int or a list
+
+
+    # Low pass filter
     if maxFrequency != None :
-            CUT_OFF_FREQUENCY = maxFrequency
-            FILTER_ORDER = 8
-            sos = signal.butter(FILTER_ORDER, CUT_OFF_FREQUENCY, 'lp', fs=sample_rate, output='sos') # Window
-            filtered = signal.sosfilt(sos, data) # Filter
-            data = filtered
-    if freq_filter != None:
-        if isinstance(freq_filter, int) : 
-            data = notch_filter(data, sample_rate, freq_filter)
-        elif isinstance(freq_filter, list)  :
-            for freq in freq_filter :
-                data = notch_filter(data, sample_rate, freq)
+        sos = signal.butter(filterOrder, maxFrequency, 'lp', fs=sampleRate, output='sos') # Window
+        filtered = signal.sosfilt(sos, data) # Filter
+        data = filtered
+
+    # High pass filter
+    if minFrequency != None :
+        sos = signal.butter(filterOrder, minFrequency, 'hp', fs=sampleRate, output='sos') # Window
+        filtered = signal.sosfilt(sos, data) # Filter
+        data = filtered
+
+    # Notch filter
+    if freqFilter != None:
+        if isinstance(freqFilter, int) : 
+            data = notchFilter(data, sampleRate, freqFilter)
+        elif isinstance(freqFilter, list) :
+            # Delete multiple frequencies
+            for freq in freqFilter :
+                data = notchFilter(data, sampleRate, freq)
         else :
-            raise Exception('freq filter must be an int or a list but is ' + str(type(freq_filter)) + ".")
+            raise Exception(f"freq filter must be an int or a list but is {str(type(freqFilter))}.")
+
     return data
