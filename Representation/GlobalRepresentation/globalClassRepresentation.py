@@ -29,7 +29,10 @@ class GlobalClassRepresentation():
     def getAllModes(self):
         # Get all the modes available
         # @return : - modes : list of the modes
+
+
         return self.existingMode
+
 
     def getAllPictures(self, path : str, audioFileName, verbose : bool = False):
         # Get all the pictures in a folder
@@ -51,6 +54,8 @@ class GlobalClassRepresentation():
 
         if verbose :
             print("All images created")
+
+
 
 if __name__ == "__main__" :
     # Test the class
