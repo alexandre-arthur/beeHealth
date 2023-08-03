@@ -2,6 +2,7 @@ import os
 from wave import open as waveOpen
 from re import split as reSplit
 import numpy as np
+import math
 import librosa as rosa
 import time
 
@@ -17,27 +18,28 @@ import time
 #   To create a dataset with most of the data
 #
 
-def storeEverySampleButLast(timeVerbose : bool = False, verbose : bool = False):
+def storeEverySampleButLast(audioPath : str, datasetPath : str, datasetName : str, sampleTime : int, timeVerbose : bool = False, verbose : bool = False):
     # Store every sample but the last one in a CSV file
-    # @arguments : - timeVerbose : do we want to print the time it took to parse each file (default : False)
+    # @arguments : - audioPath : path of the audio files
+    #              - datasetPath : path of the future dataset
+    #              - datasetName : name of the future dataset
+    #              - sampleTime : time of the sample in seconds
+    #              - timeVerbose : do we want to print the time it took to parse each file (default : False)
     #              - verbose : do we want to print the time it took to parse each file (default : False)
 
 
     overallTime = time.time()
-
-    folderPath = "Representation/BeeDataset/FromWeb"
     sizeOfExtension = 4
 
-    currentPath = "DeepLearning/NeuralHivework/HugeCSVHolder/"
-    modelPath = f"{currentPath}/HugeCSVHolder/FastHoneyTransform.csv"
+    datasetPathFile = f"{datasetPath}{datasetName}"
 
     # Remove the file if it already exists
-    if os.path.exists(modelPath) :
-        os.remove(modelPath)
+    if os.path.exists(datasetPathFile) :
+        os.remove(datasetPathFile)
 
     # Only take files with lab files
     fileNames = []
-    for fileName in os.listdir(folderPath):
+    for fileName in os.listdir(audioPath):
         if "wav" in fileName:
             fileNames.append(fileName[:-sizeOfExtension])
 
@@ -50,7 +52,7 @@ def storeEverySampleButLast(timeVerbose : bool = False, verbose : bool = False):
             print(f"Starting {fileName}")
         t = time.time()
 
-        StoreFilesToCSV(fileName, currentPath, "FastHoneyTransform.csv")
+        StoreFilesToCSV(f"{audioPath}{fileName}", datasetPath, datasetName, maxFreq=5000, sampleTime=sampleTime)
         
         if timeVerbose :
             print(f"{fileName} is done in {time.time() - t}s ({counter}/{len(fileNames[1:-1])}).")
@@ -59,29 +61,28 @@ def storeEverySampleButLast(timeVerbose : bool = False, verbose : bool = False):
 
     if verbose or timeVerbose :
         print(f"Everything is done in {time.time() - overallTime}s")
+        print(f"Size of a line : {int(55125 / 10 * sampleTime)}")
 
     # Remove the temporary file
-    os.remove(f"{currentPath}Processing.wav")
+    os.remove(f"{datasetPath}Processing.wav")
 
 
-def StoreFilesToCSV(fileName : str, currentPath : str, modelFileName : str, timeVerbose : bool = False, verbose : bool = False):
+def StoreFilesToCSV(genericAudioPath : str, datasetPath : str, modelFileName : str, maxFreq : int = 5000, sampleTime : int = 10, timeVerbose : bool = False, verbose : bool = False):
     # Store the data of a file in a CSV file
-    # @arguments : - fileName : name of the file to parse
-    #              - currentPath : path of the current file
+    # @arguments : - genericAudioPath : name and path of the file to parse
+    #              - datasetPath : path of the current file
     #              - modelFileName : name of the file in where we want to put the data (no extension)
+    #              - maxFreq : maximum frequency to keep (default : 5000)
+    #              - sampleTime : duration of the sample in seconds (default : 10)
     #              - timeVerbose : do we want to print the time (default : False)
     #              - verbose : do we want to print more information (default : False)
 
 
-    timeDuration = 10
-    maxFreq = 5000
-
     # Paths
-    genericFilePath = f"Representation/BeeDataset/FromWeb/{fileName}"
-    dataFilePath = f"{genericFilePath}.lab"
-    audioFilePath = f"{genericFilePath}.wav"
-    modelPath = f"{currentPath}{modelFileName}"
-    tempAudioFilePath = f"{currentPath}Processing.wav"
+    dataFilePath = f"{genericAudioPath}.lab"
+    audioFilePath = f"{genericAudioPath}.wav"
+    datasetName = f"{datasetPath}{modelFileName}"
+    tempAudioFilePath = f"{datasetPath}Processing.wav"
 
     # Read the lab file
     with open(dataFilePath, 'r') as reader:
@@ -95,22 +96,21 @@ def StoreFilesToCSV(fileName : str, currentPath : str, modelFileName : str, time
             begin, end = getBeginAndEndOfBee(line, r'\t+')
 
             # Check if the duration is long enough
-            if begin >= end - timeDuration - timeDuration :
+            if begin >= end - sampleTime - sampleTime :
                 continue
 
             # Read the audio file and calculate the FFT
-            for time in range(begin, end - timeDuration - timeDuration, timeDuration): # -timeDuration to avoid the end of the file then to keep timeDuration seconds for the test
-                readPartOfAudio(audioFilePath, tempAudioFilePath, time, timeDuration, verbose=verbose)
+            for time in range(begin, end - sampleTime - sampleTime, sampleTime): # -sampleTime to avoid the end of the file then to keep sampleTime seconds for the test
+                readPartOfAudio(audioFilePath, tempAudioFilePath, time, sampleTime, verbose=verbose)
                 if timeVerbose :
-                    print(f"time : {time} and duration : {timeDuration}")
+                    print(f"time : {time} and duration : {sampleTime}")
 
             magnitudes = calculateFFT(tempAudioFilePath)
             magnitudes = magnitudes[:(int) (magnitudes.size/(20000 / maxFreq))] # Only upto a certain frequency
 
             # Write the data to the CSV file
-            f = writeToFileAsCSV(modelPath, magnitudes, bee)
-            if not(f) :
-                print(f"Warning : {magnitudes.size} value in line : {lineNumber} in file : {fileName}")
+            sampleNumber = int(55125 / 10 * sampleTime)
+            writeToFileAsCSV(datasetName, magnitudes, bee, sampleNumber=sampleNumber)
 
 
 #
@@ -211,7 +211,7 @@ def getBeginAndEndOfBee(string : str, regex):
     endStr = parts[1].replace(",", ".")
 
     # Round the values
-    begin = int(np.ceil(beginStr))
+    begin = int(np.ceil(float(beginStr)))
     end = int(float(endStr))
 
     return begin, end
@@ -264,26 +264,27 @@ def writeToFileAsCSV(outputPath : str, data : list, bee : int, sampleNumber : in
 #       Functions used to create the verification using the last sample
 #
 
-def storeLastSample(timeVerbose : bool = False, verbose : bool = False):
+def storeLastSample(audioPath : str, datasetPath : str, datasetName : str, sampleTime : int, timeVerbose : bool = False, verbose : bool = False):
     # Store the last sample of each bee file in a CSV file
-    # @arguments : - timeVerbose : do we want to print the time it took (default : False)
-    #              - verbose : do we want to print more information (default : False)
+    # @arguments : - audioPath : path of the audio files
+    #              - datasetPath : path of the future dataset
+    #              - datasetName : name of the future dataset
+    #              - sampleTime : time of the sample in seconds
+    #              - timeVerbose : do we want to print the time it took (default : False)
+    #              - verbose : do we want to print (default : False)
 
 
-    # Paths
-    folderPath = "Representation/BeeDataset/FromWeb"
     sizeOfExtension = 4
 
-    currentPath = "DeepLearning/NeuralHivework/"
-    modelPath = f"{currentPath}/HugeCSVHolder/LastSamples.csv"
+    datasetName = f"{datasetPath}{datasetName}"
 
     # Remove the file if it already exists
-    if os.path.exists(modelPath):
-        os.remove(modelPath)
+    if os.path.exists(datasetName):
+        os.remove(datasetName)
 
     # Only take files with wav files
     fileNames = []
-    for fileName in os.listdir(folderPath):
+    for fileName in os.listdir(audioPath):
         if "wav" in fileName:
             fileNames.append(fileName[:-sizeOfExtension])
 
@@ -297,7 +298,7 @@ def storeLastSample(timeVerbose : bool = False, verbose : bool = False):
             print(f"Starting {fileName}")
         t = time.time()
 
-        getLastSamplesInCSV(fileName, "DeepLearning/NeuralHivework/HugeCSVHolder/", "LastSamples.csv")
+        getLastSamplesInCSV(f"{audioPath}{fileName}", datasetPath, datasetName, 5)
 
         if timeVerbose :
             print(f"{fileName} is done in {time.time() - t}s ({counter}/{len(fileNames[1:-1])})")
@@ -306,20 +307,19 @@ def storeLastSample(timeVerbose : bool = False, verbose : bool = False):
     return value
 
 
-def getLastSamplesInCSV(fileName, currentPath, modelFileName):
+def getLastSamplesInCSV(audioFilePathName : str, datasetPath : str, modelFileName : str, sampleTime : int):
     # Store the last sample of a file in a CSV file
-    # @arguments : - fileName : name of the file to parse
-    #              - currentPath : path of the current file
+    # @arguments : - audioFilePathName : name of the file to parse
+    #              - datasetPath : path of the current file
     #              - modelFileName : name of the file in where we want to put the data (no extension)
 
 
-    timeDuration = 10
     maxFreq = 5000
 
     # Paths
-    genericFilePath = f"Representation/BeeDataset/FromWeb/{fileName}"
-    dataFilePath = f"{genericFilePath}.lab"
-    audioFilePath = f"{genericFilePath}.wav"
+    #genericFilePath = f"Audio/BeeDataset/RawFilesFromWeb/{audioFilePathName}"
+    dataFilePath = f"{audioFilePathName}.lab"
+    audioFilePath = f"{audioFilePathName}.wav"
 
     # Read the lab file
     with open(dataFilePath, 'r') as reader:
@@ -330,21 +330,24 @@ def getLastSamplesInCSV(fileName, currentPath, modelFileName):
 
             begin, end = getBeginAndEndOfBee(line, r'\t+')
 
-            if end - begin <= timeDuration:
+            if end - begin <= sampleTime:
                 continue
-            times = range(begin, end - timeDuration, timeDuration) # -10 to avoid the end of the file
+            times = range(begin, end - sampleTime, sampleTime) # -10 to avoid the end of the file
             time = list(times)[-1]
 
-            readPartOfAudio(audioFilePath, f"{currentPath}Processing.wav", time, timeDuration)
+            readPartOfAudio(audioFilePath, f"{datasetPath}Processing.wav", time, sampleTime)
 
-            magnitudes = calculateFFT(f"{currentPath}Processing.wav")
+            magnitudes = calculateFFT(f"{datasetPath}Processing.wav")
             magnitudes = magnitudes[:(int) (magnitudes.size/(20000 / maxFreq))] # Only upto a certain frequency
 
-            f = writeToFileAsCSV(f"{currentPath}{modelFileName}", magnitudes, bee)
-            if not(f) :
-                print(f"Warning : {magnitudes.size} value in line : {lineNumber} in file : {fileName}")
-
+            sampleNumber = int(55125 / 10 * sampleTime)
+            writeToFileAsCSV(f"{modelFileName}", magnitudes, bee, sampleNumber=sampleNumber)
 
 if __name__ == "__main__":
-    storeEverySampleButLast()
-    storeLastSample()
+    audioPath = "Audio/BeeDataset/RawFilesFromWeb/"
+    datasetPath = "DeepLearning/NeuralHivework/HugeCSVHolder/"
+    datasetName = "FastHoneyTransform2.csv"
+    sampleSeconds = 5
+    storeEverySampleButLast(audioPath, datasetPath, datasetName, sampleSeconds, verbose=True, timeVerbose=True)
+    datasetName = "LastSamples.csv"
+    storeLastSample(audioPath, datasetPath, datasetName, sampleSeconds, verbose=True, timeVerbose=True)

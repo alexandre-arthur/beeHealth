@@ -11,47 +11,47 @@ from time import time
 ##############################################################################################
 
 
-def loadCSVData(filename : str, data_length : int = 8, verbose : bool = False) :
+def loadCSVData(fileName : str, dataLength : int = 8, verbose : bool = False) :
     #Load the data from a csv file. 
-    # @arguments : - filename : must be a csv
+    # @arguments : - fileName : must be a csv
     #              - datalength : number of column of the file - 1 (we don't include the results part of the csv)
     #              - verbose : do we want to print or not (default : False)
     # @return : - X : the data of the csv
     #           - Y : the expected result for each data
 
 
-    if filename[-4:] != ".csv":
-        raise Exception("filename must be a csv , file was : " + filename)
+    if fileName[-4:] != ".csv":
+        raise Exception("fileName must be a csv , file was : " + fileName)
     # load the datatset
-    dataset = loadtxt(filename, delimiter=",")
+    dataset = loadtxt(fileName, delimiter=",")
 
     # split into input (X : data) and output (Y : expected result) variables
-    X = dataset[:,0:data_length]
-    Y = dataset[:,data_length]
+    X = dataset[:,0:dataLength]
+    Y = dataset[:,dataLength]
 
     return X, Y
 
 
-def getLayersFromList(model, layers : list, data_length : int) :
+def getLayersFromList(model, layers : list, dataLength : int) :
     # Create the layers of a model from a list
     # @arguments : - layers : list of the layers
-    #              - data_length : size of the input data
+    #              - dataLength : size of the input data
     #              - verbose : do we want to print or not (default : False)
     # @return : - model : the model
 
 
-    model.add(Dense(layers[0], input_dim=data_length, activation='relu'))
+    model.add(Dense(layers[0], input_dim=dataLength, activation='relu'))
     for i in range(1, len(layers)) :
         model.add(Dense(layers[i], activation='relu'))
     model.add(Dense(1, activation='sigmoid')) # sigmoid is used for binary classification (last one)
 
 
-def createModel(X, Y, layers : list, data_length : int, epochs : int = 150, batch_size : int = 10, verbose : bool = False) :
+def createModel(X, Y, layers : list, dataLength : int, epochs : int = 150, batchSize : int = 10, verbose : bool = False) :
     # Create a model with the data
     # @arguments : - X : input of the model
     #              - Y : expected result
     #              - epochs : number of epochs (deault : 150)
-    #              - batch_size : size of the batches in each epochs (default : 10)
+    #              - batchSize : size of the batches in each epochs (default : 10)
     #              - verbose : do we want to print or not (default : False)
     # @return : - model : the model
 
@@ -59,13 +59,13 @@ def createModel(X, Y, layers : list, data_length : int, epochs : int = 150, batc
     t = time()
     # create model
     model = Sequential()
-    getLayersFromList(model, layers, data_length)
+    getLayersFromList(model, layers, dataLength)
 
     # Compile model
     model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 
     # Fit the model
-    model.fit(X, Y, epochs=epochs, batch_size=batch_size, verbose=verbose)
+    model.fit(X, Y, epochs=epochs, batch_size=batchSize, verbose=verbose)
 
     # evaluate the model
     scores = model.evaluate(X, Y, verbose=verbose)
@@ -75,59 +75,59 @@ def createModel(X, Y, layers : list, data_length : int, epochs : int = 150, batc
     return model
 
 
-def StoreJSONModel(model, filename : str, verbose : bool = False) :
+def StoreJSONModel(model, fileName : str, verbose : bool = False) :
     # Store the model to a JSON file and a h5 file for the wheights
     # @arguments : - model : model to store
-    #              - filename : name of the file in where we want to put the data (no extension)
+    #              - fileName : name of the file in where we want to put the data (no extension)
     #              - verbose : do we want to print or not (default : False)
 
 
     # serialize model to JSON
-    model_json = model.to_json()
-    with open(filename + ".json", "w") as json_file:
-        json_file.write(model_json)
+    modelJson = model.to_json()
+    with open(fileName + ".json", "w") as jsonFile:
+        jsonFile.write(modelJson)
         # serialize weights to HDF5
-    model.save_weights(filename + ".h5")
+    model.save_weights(fileName + ".h5")
     if verbose :
         print("Saved model to disk")
 
 
-def LoadJSONModel(filename : str, verbose : bool = False):
+def LoadJSONModel(fileName : str, verbose : bool = False):
     # Load a model from a json and a h5 file
-    # @arguments : - filename : name of the file where the data is stored without the extension
+    # @arguments : - fileName : name of the file where the data is stored without the extension
     #              - verbose : do we want to print or not (default : False)
     # @return : - model : the model
 
 
     # open the json file
-    json_file = open(filename+'.json', 'r')
-    loaded_model_json = json_file.read()
-    json_file.close()
-    loaded_model = model_from_json(loaded_model_json)
+    jsonFile = open(fileName+'.json', 'r')
+    loadedModelJson = jsonFile.read()
+    jsonFile.close()
+    loadedModel = model_from_json(loadedModelJson)
     # load weights into new model
-    loaded_model.load_weights(filename+".h5")
+    loadedModel.load_weights(fileName + ".h5")
     if verbose :
         print("Loaded model from disk")
-    return loaded_model
+    return loadedModel
 
 
-def loadModel(filename : str, verbose : bool = False):
+def loadModel(fileName : str, verbose : bool = False):
     # Load a model from a json file and compile it
-    # @arguments : - filename : name of the file where the data is stored without the extension
+    # @arguments : - fileName : name of the file where the data is stored without the extension
     #              - verbose : do we want to print or not (default : False)
     # @return : - model : the model
 
 
     t = time()
     # load json and create model
-    loaded_model = LoadJSONModel(filename, verbose=verbose)
+    loadedModel = LoadJSONModel(fileName, verbose=verbose)
 
     # evaluate loaded model on test data
-    loaded_model.compile(loss='binary_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
+    loadedModel.compile(loss='binary_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
     if verbose :
         print(f'Model loaded in {time() - t} seconds.')
 
-    return loaded_model
+    return loadedModel
 
 
 def evaluateModel(model, X, Y, verbose : bool = False):
@@ -149,7 +149,7 @@ def predict(model, X_guess : list, Y_guess : list, verbose : bool = False, timeV
     # @arguments : - model : model to use
     #              - X_guess : input of the model
     #              - Y_guess : expected result
-    #              - data_length : size of the array - 1, must be the same as the model input size
+    #              - dataLength : size of the array - 1, must be the same as the model input size
     #              - verbose : do we want to print or not (default : False)
     #              - timeVerbose : do we want to print the time it took to predict (default : False)
 
@@ -166,35 +166,35 @@ def predict(model, X_guess : list, Y_guess : list, verbose : bool = False, timeV
     return predictions, Y_guess
 
 
-def prediction(model, guess : list, data_length : int, verbose : bool = False):
+def prediction(model, guess : list, dataLength : int, verbose : bool = False):
     # predict a value using a ML model
     # @arguments : - model : model to use
     #              - guess : numpy array with each line in a different sub array
-    #              - data_length : size of the array - 1, must be the same as the model input size
+    #              - dataLength : size of the array - 1, must be the same as the model input size
     #              - verbose : do we want to print or not (default : False)
 
 
-    X_guess = guess[:,0:data_length]
-    Y_guess = guess[:,data_length]
+    X_guess = guess[:,0:dataLength]
+    Y_guess = guess[:,dataLength]
     # make class predictions with the model
     predict(model, X_guess, Y_guess, verbose=verbose)
 
 
-def createAndStoreModelFromCSV(input_filename : str, output_filename : str, layers : list, data_length : int, verbose : bool = False) :
+def createAndStoreModelFromCSV(inputFileName : str, outputFileName : str, layers : list, dataLength : int, verbose : bool = False) :
     # Create and then store a ML model
-    # @arguments : - input_filename : the csv file with the data
-    #              - output_filename : the name of the json and the h5 with the data without an extension
-    #              - data_length : the number of information in each column of the csv - 1
+    # @arguments : - inputFileName : the csv file with the data
+    #              - outputFileName : the name of the json and the h5 with the data without an extension
+    #              - dataLength : the number of information in each column of the csv - 1
     #              - verbose : do we want to print or not (default : False)
 
 
     X, Y = (0, 0)
     try :
-        X, Y = loadCSVData(input_filename, data_length=data_length, verbose=verbose)
+        X, Y = loadCSVData(inputFileName, dataLength=dataLength, verbose=verbose)
     except:
-        print(f"Unable to load the data, verify if the file {input_filename} exists.")
+        print(f"Unable to load the data, verify if the file {inputFileName} exists.")
         return
 
-    model = createModel(X, Y, layers, data_length, verbose=verbose)
+    model = createModel(X, Y, layers, dataLength, verbose=verbose)
     evaluateModel(model, X, Y, verbose=verbose)
-    StoreJSONModel(model, output_filename, verbose=verbose)
+    StoreJSONModel(model, outputFileName, verbose=verbose)
