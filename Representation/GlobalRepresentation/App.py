@@ -2,6 +2,7 @@ import tkinter as tk
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from GlobalFiguresBees import *
+from GlobalClassRepresentation import *
 from classRepresentation import *
 from PIL import ImageTk, Image
 import winsound
@@ -81,6 +82,7 @@ def newwindow():
             PATH_NAME = newSoundFile
 
             # Change the audio studied and goes back to FFT
+            fft = FFTclass()
             fft.changeto(audio, sr, fig, canva)
 
             # Change the title
@@ -117,58 +119,46 @@ def newwindow():
     
     mainFrame.grid(row=2, column=1)
 
-    # Call all the different modes
-    wave = Waveclass()
-    fft = FFTclass()
-    chromafeature = ChromaFeatureclass()
-    spectrogram = Spectrogramclass()
-    mfcc = MFCCclass()
-    mfccdelta = MFCCdeltaclass()
-    spectralcentroid = spectralcentroidclass()
-    zcr = ZCRClass()
-    constantq = ConstantQclass()
-    variableq = VariableQclass()
-    energynormalized = EnergyNormalizedclass()
-    bandwidth = Bandwidthclass()
-    spectralcontrast = SpectralContrastclass()
-    spectralflatness = SpectralFlatnessclass()
-    spectralrolloff = SpectralRolloffclass()
-    tonalCentroid = TonalCentroidclass()
+    def addImageButton(root, imagePath : str, buttonFunction, bgColor : str = "#FFFFFF", width : int = 200, height : int = 200, borderWidth : int = 0):
+        imageFrame = tk.Frame(root)
+        imageFrame.configure(background=bgColor)
+        img = Image.open(imagePath)
+        img = img.resize((140, 110), Image.ANTIALIAS)
+        new_img = ImageTk.PhotoImage(img)
+        image = tk.Button(imageFrame, image=new_img, background=bgColor, width=width, height=height, borderwidth=borderWidth, relief="sunken", command=buttonFunction)
+        image.image = new_img  # Store a reference to avoid garbage collection
+        image.pack()
+
+        return imageFrame
 
     # Create the frame with an image
-    imageframe = tk.Frame(root)
-    imageframe.configure(background=bgcolor)
-    imagepath = "Representation\GlobalRepresentation\Cartoon-Bee.png"
-    img = Image.open(imagepath)
-    img = img.resize((140,110), Image.ANTIALIAS)
-    new_img = ImageTk.PhotoImage(img)
-    sound = lambda : winsound.PlaySound(PATH_NAME, winsound.SND_FILENAME)
-    image = tk.Button(imageframe, image = new_img, background=bgcolor, width=140, height=50, borderwidth=0, relief="sunken", command=sound)
-    image.pack()
-    imageframe.grid(row=1, column=2)
+    imagePath = r"Representation\\GlobalRepresentation\\Cartoon-Bee.png"
+    buttonFunction = lambda : winsound.PlaySound(PATH_NAME, winsound.SND_FILENAME)
+    imageFrame = addImageButton(root, imagePath, buttonFunction, bgColor=bgcolor, borderWidth=0, width = 140, height = 50)
 
+    imageFrame.grid(row=1, column=2)
 
 
     # Frame below with the buttons
     changemodeframe = tk.Frame(root, bg="white")
 
+    global audio
+    audio, sr = rosa.load(PATH_NAME)
+
     # generic function to create buttons
     def create_button(mode, row, column):
+        global audio
         button = tk.Button(changemodeframe, text=mode.getTitle(), width=20, height=2, command=lambda: mode.changeto(audio, sr, fig, canva))
         button.grid(row=row, column=column)
         ToolTip(button, mode.description)
 
-    # mode with which we can study an audio file
-    #existingmode = [wave, fft, chromafeature, spectrogram, mfcc, mfccdelta, spectralcentroid, zcr, constantq, variableq, energynormalized, bandwidth, spectralflatness, spectralrolloff, tonalCentroid]
-    existingmode = [wave, fft, bandwidth, zcr, spectralflatness, spectralrolloff, spectralcentroid, spectrogram, chromafeature, energynormalized, mfcc, mfccdelta, constantq, variableq, spectralcontrast, tonalCentroid]
     # Creating the buttons
+    existingmode = GlobalClassRepresentation().getAllModes()
     for index, mode in enumerate(existingmode):
         create_button(mode, row=index+1, column=1)
 
     # Put everything together
     changemodeframe.grid(row=2, column=2)
-
-
 
     root.title(FILE_NAME)
     root.title("Beehealth - Representation")
@@ -196,7 +186,7 @@ def changeTitleFrame(root, text : str, bgColor : str = "#FFFFFF", fgColor : str 
     
     return titleFrame
 
-def createGraphFrame(root, bgColor : str = "#FFFFFF"):
+def createGraphFrame(root, filePath, bgColor : str = "#FFFFFF"):
     # Create the frame with the graphs
     mainFrame = tk.Frame(root)
     mainFrame.configure(background=bgColor)
@@ -205,7 +195,7 @@ def createGraphFrame(root, bgColor : str = "#FFFFFF"):
     plotframe = tk.Frame(mainFrame, bg=bgColor)
 
     # Configure the plt to go on the frame
-    fig, canva = addPlotToFrame(plotframe, PATH_NAME, bgColor, width=root.winfo_screenwidth()-20*7)
+    fig, canva = addPlotToFrame(plotframe, filePath, bgColor, width=root.winfo_screenwidth()-20*7)
 
     plotframe.pack(side=tk.BOTTOM, fill=tk.BOTH)
 
@@ -231,6 +221,8 @@ def addPlotToFrame(frame, pathName : str, bgColor : str = "#FFFFFF", width : int
     wave.plotfct(audio, sampleRate, ax)
 
     return fig, canva
+
+
 
 if __name__ == "__main__":
     newwindow()
