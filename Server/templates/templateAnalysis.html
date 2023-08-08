@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <title>beeHealth</title>
+    <link href="{{ url_for('static', filename='css/analysisCSS.css') }}" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope&family=Montserrat&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <img src="{{ url_for('static', filename='picture/ouluLogo.jpeg') }}" alt="University of Oulu logo">
+                <img src="{{ url_for('static', filename='picture/logo.jpg') }}" alt="beeHealth logo">
+            </div>
+            <a class="mainLink" href="beeHealth_main.html">beeHealth</a>
+            <div class = "test">
+                <a class="link" href="beeHealth_data.html">Data</a>
+                <a class="link" href="beeHealth_about.html">About</a>
+                <a class="link" href="beeHealth_contact.html">Contact</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section> 
+            <div class="graph">
+                <p class="subtitle">Spectrogram</p>
+                <img src="{{ url_for('static', filename=path +'/Spectrogram.png') }}" alt="spectrogram">
+            </div>
+
+            <div class="graph">
+                <p class="subtitle">MFFC</p>
+                <img src="{{ url_for('static', filename=path +'/MFFC.png') }}" alt="MFCC">
+            </div>
+
+            <div class="graph">
+                <p class="subtitle">MFCC delta</p>
+                <img src="{{ url_for('static', filename=path +'/MFCC_Delta.png') }}" alt="MFCC delta">
+            </div>
+
+            <div class="graph">
+                <p class="subtitle">Spectral centroid</p>
+                <img src="{{ url_for('static', filename=path +'/Spectral_Centroid.png') }}" alt="spectral centroid">
+            </div>
+
+            <div class="graph">
+                <p class="subtitle">ZRC</p>
+                <img src="{{ url_for('static', filename=path +'/Zero-crossing_rate.png') }}" alt="ZRC">
+            </div>
+
+            <div class="graph">
+                <p class="subtitle">Constant-Q chromagram</p>
+                <img src="{{ url_for('static', filename=path +'/Constant_Q.png') }}" alt="constant-Q chromagram">
+            </div>
+
+            <div class="graph">
+                <p class="subtitle">Variable-Q chromagram</p>
+                <img src="{{ url_for('static', filename=path +'/Variable_Q.png') }}" alt="variable-Q chromagram">
+            </div>
+
+            <div class="graph">
+                <p class="subtitle">Chroma Energy Normalized</p>
+                <img src="{{ url_for('static', filename=path +'/Energy_Normalized.png') }}" alt="chroma energy normalized">
+            </div>
+
+            <div class="graph">
+                <p class="subtitle">spectral bandwidth</p>
+                <img src="{{ url_for('static', filename=path +'/Bandwidth.png') }}" alt="spectral bandwidth">
+            </div>
+
+            <div class="graph">
+                <p class="subtitle">spectral contrast</p>
+                <img src="{{ url_for('static', filename=path +'/Spectral_Contrast.png') }}" alt="spectral contrast">
+            </div>
+
+            <div class="graph">
+                <p class="subtitle">spectral flatness</p>
+                <img src="{{ url_for('static', filename=path +'/Spectral_Flatness.png') }}" alt="spectral flatness">
+            </div>
+
+            <div class="graph">
+                <p class="subtitle">roll-off frequency</p>
+                <img src="{{ url_for('static', filename=path +'/Roll_Off_Frequency.png') }}" alt="roll-off frequency">
+            </div>
+
+            <div class="graph">
+                <p class="subtitle">tonal centroid features</p>
+                <img src="{{ url_for('static', filename=path +'/Tonal_Centroid.png') }}" alt="tonal centroid features">
+            </div>
+
+            <div class="graph">
+                <p class="subtitle">FFT</p>
+                <img src="{{ url_for('static', filename=path +'/FFT.png') }}"alt="FFT">
+            </div>
+
+            <div class="graph">
+                <p class="subtitle">Chromafeature</p>
+                <img src="{{ url_for('static', filename=path +'/Chroma_feature.png') }}" alt="chromafeature">
+            </div>
+        </section>
+    </main>
+
+    <footer>
+
+    </footer>
+</body>
+</html>
