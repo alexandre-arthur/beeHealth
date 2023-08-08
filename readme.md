@@ -24,8 +24,10 @@ This directory is the only one that doesn't exist when cloning the project. That
 To do so, you need to go to "Representation/AudioDownload/JSONDownload/" and to launch APIReaderJSON.py which reads the ToBeeOrNotToBee.json file and download all the files into the "/Audio" folder. It takes approximately 4 minutes and you need an internet connexion.
 
 
-## Code Arduino
-
+# Arduino
+They are two folders : 
+- SoundDetection : contain an arduino code to read the I2S mic and display the value to a graph thanks to arduino IDE 
+- request : send resquest to a webserver with an esp32 
 
 ## Deep Learning
 
@@ -62,6 +64,7 @@ The templates folder houses all dynamic files.
     - beeHealth_contact.html: A contact page for the project.
     - beeHealth_about.html: Offers an explanation of the project.
     - beeHealth_main.html: The main landing page of the website.
+    - templateAnalysis.html: A template for the analysis pages.
 
 - Static
 The static folder contains various static files, including sounds, CSS stylesheets, and images. 

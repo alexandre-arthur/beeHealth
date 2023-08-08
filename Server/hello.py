@@ -74,7 +74,7 @@ def generateFFT(folder_name):
 # Generate the route for each analysis HTML file
 @app.route('/<folder_name>.html')
 def beeHealth_analysis(folder_name):
-    source_file_name = "templateAnalysis.html"
+    source_file_name = "templates/templateAnalysis.html"
     new_file_name = folder_name + ".html"
 
     # Copy the source file to the templates folder with the new file name
