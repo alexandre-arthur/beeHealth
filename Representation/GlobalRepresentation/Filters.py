@@ -23,7 +23,7 @@ def soundDataFilter(data, sampleRate : int, maxFrequency : int = None, minFreque
     #              - sampleRate : sample rate of the sound data (default : 44100 >>> For Audio sounds)
     #              - maxFrequency : maximum frequency to keep (default : None >>> No filter)
     #              - minFrequency : minimum frequency to keep (default : None >>> No filter)
-    #              - freqFilter : frequency to delete (default : None >>> No filter)
+    #              - freqFilter : frequency to delete must be an int or a list of int (default : None >>> No filter)
     # @return : sound data filtered
     # @raise : Exception if maxFrequency is not an int or a list
 

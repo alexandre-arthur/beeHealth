@@ -132,7 +132,7 @@ def newwindow():
         return imageFrame
 
     # Create the frame with an image
-    imagePath = r"Representation\\GlobalRepresentation\\Cartoon-Bee.png"
+    imagePath = r"Representation\\GlobalRepresentation\\Images\\Cartoon-Bee.png"
     buttonFunction = lambda : winsound.PlaySound(PATH_NAME, winsound.SND_FILENAME)
     imageFrame = addImageButton(root, imagePath, buttonFunction, bgColor=bgcolor, borderWidth=0, width = 140, height = 50)
 

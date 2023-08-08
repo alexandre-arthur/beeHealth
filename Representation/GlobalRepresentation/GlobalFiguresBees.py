@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import librosa as rosa
 
-from classRepresentation import *
+from ClassRepresentation import *
 from GlobalClassRepresentation import GlobalClassRepresentation as allRepresentation
 import Filters
 

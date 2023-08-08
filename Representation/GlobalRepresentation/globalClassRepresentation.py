@@ -1,4 +1,4 @@
-from classRepresentation import *
+from ClassRepresentation import *
 import os
 import librosa as rosa
 
