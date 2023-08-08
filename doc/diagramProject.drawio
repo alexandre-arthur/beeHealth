@@ -1,12 +1,9 @@
-<mxfile host="app.diagrams.net" modified="2023-08-08T13:22:18.812Z" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36" etag="lbGDAetj26G3SMVEZPqh" version="21.6.6" type="github">
+<mxfile host="app.diagrams.net" modified="2023-08-08T13:26:44.122Z" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36" etag="e2xhHGSctDFn09YxwdDy" version="21.6.6" type="github">
   <diagram name="Page-1" id="usuUfPS5e59cJRi4W0HT">
     <mxGraphModel dx="1434" dy="797" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="#000000" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="-iPvGTC_k9nTGnEAITgg-1" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#FFFFFF;strokeWidth=2;" vertex="1" parent="1">
-          <mxGeometry x="80" y="200" width="670" height="400" as="geometry" />
-        </mxCell>
         <mxCell id="OaMXt8uYpAaF7VJLPhh--16" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#994C00;dashed=1;strokeWidth=2;" parent="1" vertex="1">
           <mxGeometry x="90" y="240" width="250" height="350" as="geometry" />
         </mxCell>
@@ -60,10 +57,10 @@
         <mxCell id="OaMXt8uYpAaF7VJLPhh--13" value="Machine learning&amp;nbsp;" style="whiteSpace=wrap;html=1;aspect=fixed;fillColor=#00FF00;" parent="1" vertex="1">
           <mxGeometry x="630" y="270" width="80" height="80" as="geometry" />
         </mxCell>
-        <mxCell id="-iPvGTC_k9nTGnEAITgg-2" value="Embedded&amp;nbsp;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+        <mxCell id="-iPvGTC_k9nTGnEAITgg-2" value="Embedded&amp;nbsp;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
           <mxGeometry x="185" y="210" width="60" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="-iPvGTC_k9nTGnEAITgg-3" value="Server" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+        <mxCell id="-iPvGTC_k9nTGnEAITgg-3" value="Server" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
           <mxGeometry x="581" y="210" width="60" height="30" as="geometry" />
         </mxCell>
       </root>
