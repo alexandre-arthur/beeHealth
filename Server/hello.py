@@ -49,9 +49,10 @@ def copy_file_in_template_directory(source_file_name, new_file_name):
         # Get the path of the "templates" folder in the current directory
         templates_folder_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 
-        # Get the absolute path of the destination file in the "templates" folder
-        destination_file_path = os.path.join(templates_folder_path, new_file_name)
-
+        # Get the absolute path of the destination file in the "templates/analysis" folder
+        destination_file_path = os.path.join(templates_folder_path+"/analysis/", new_file_name)
+        print("Destination file path:")
+        print(destination_file_path)
         # Copy the source file to the destination path
         shutil.copy(source_file_path, destination_file_path)
 
@@ -74,7 +75,7 @@ def generateFFT(folder_name):
 # Generate the route for each analysis HTML file
 @app.route('/<folder_name>.html')
 def beeHealth_analysis(folder_name):
-    source_file_name = "templates/templateAnalysis.html"
+    source_file_name = "templates/beeHealth_analysis.html"
     new_file_name = folder_name + ".html"
 
     # Copy the source file to the templates folder with the new file name
@@ -85,7 +86,7 @@ def beeHealth_analysis(folder_name):
     generatePictures.getAllPictures('static/uploads/' + folder_name + '/', folder_name + '_beeSound.wav')
 
 
-    return render_template(folder_name + '.html', path='uploads/' + folder_name)
+    return render_template("analysis/"+folder_name + '.html', path='uploads/' + folder_name)
 
 # Generate the route for the beeHealth_about.html file
 @app.route('/beeHealth_about.html')

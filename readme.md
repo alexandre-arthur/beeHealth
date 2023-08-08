@@ -64,7 +64,10 @@ The templates folder houses all dynamic files.
     - beeHealth_contact.html: A contact page for the project.
     - beeHealth_about.html: Offers an explanation of the project.
     - beeHealth_main.html: The main landing page of the website.
-    - templateAnalysis.html: A template for the analysis pages.
+    - beeHealth_analysis.html: A template for the analysis pages.
+
+- Templates/analysis
+    - contain the analysis web pages
 
 - Static
 The static folder contains various static files, including sounds, CSS stylesheets, and images. 
