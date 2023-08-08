@@ -6,27 +6,30 @@ import java.util.ArrayList;
 
 public class BeeLineFinder {
     public static void main(String[] args) {
-        File folder = new File("Representation/BeeDataset/FromWeb");
+        //Path to the folder containing the files
+        String path = "Representation/BeeDataset/RawFilesFromWeb";
+        File folder = new File(path);
         File[] listOfFiles = folder.listFiles();
 
         int sizeOfExtension = 4;
         ArrayList<String> fileNames = new ArrayList<>();
+        // Get the file names without the extension
         for(File listOfFile : listOfFiles) {
-            if (listOfFile.getName().contains("lab")) {
+            if (listOfFile.getName().contains("wav")) {
                 int fileNameLength = listOfFile.getName().length();
                 fileNames.add(listOfFile.getName().substring(0, fileNameLength - sizeOfExtension));
             }
         }
         for (String fileName : fileNames) {
             System.out.println("Starting " + fileName);
-            parseAFile(fileName);
+            parseAFile(fileName, path);
             System.out.println(fileName + " is done.");
         }
     }
 
-    public static void parseAFile(String fileName) {
+    public static void parseAFile(String fileName, String readerPath) {
         // Reader path
-        String genericFilePath = "Representation/BeeDataset/FromWeb/" + fileName;
+        String genericFilePath = readerPath + "/" + fileName;
         String dataFilePath = genericFilePath + ".lab"; // Update with the actual file path
         String audioFilePath = genericFilePath + ".wav";
 
@@ -47,7 +50,7 @@ public class BeeLineFinder {
                 else if(line.contains("nobee")) {
                     beeLines.add("N");
                 }
-                else { 
+                else {
                     continue;
                 }
                 System.out.println(dataFilePath);
