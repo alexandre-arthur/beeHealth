@@ -1,0 +1,4 @@
+# Arduino
+They are two folders : 
+- SoundDetection : contain an arduino code to read the I2S mic and display the value to a graph thanks to arduino IDE 
+- request : send resquest to a webserver with an esp32 
