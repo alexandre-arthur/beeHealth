@@ -1,0 +1,19 @@
+# Server
+This part of the project is powered by Flask. Flask is a microservice that enables the creation of a web server using Python. One of the advantages of this approach is the flexibility to utilize a wide range of technologies.
+
+In this project, we employ HTML and CSS. We have multiple templates, and thanks to the Jinja template engine, we can customize some aspects. For instance, on the data page, we exhibit all the sounds from the project, each linked to its corresponding analysis page.
+
+## Folder Structure
+- Main
+    - hello.py: This script initializes the web server and contains functions to generate HTML pages.
+    - request_wav.py: Responsible for sending WAV files to the server.
+
+- Templates
+The templates folder houses all dynamic files.
+    - beeHealth_data.html: This template showcases all the sounds and provides links to their respective analysis pages.
+    - beeHealth_contact.html: A contact page for the project.
+    - beeHealth_about.html: Offers an explanation of the project.
+    - beeHealth_main.html: The main landing page of the website.
+
+- Static
+The static folder contains various static files, including sounds, CSS stylesheets, and images. 

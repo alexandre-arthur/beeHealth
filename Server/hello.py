@@ -7,6 +7,7 @@ import globalClassRepresentation as gcr
 
 app = Flask(__name__)
 
+#Generate the route for the beeHealth_main.html file
 @app.route('/')
 @app.route('/beeHealth_main.html')
 def beeHealth_main():
@@ -62,6 +63,7 @@ def copy_file_in_template_directory(source_file_name, new_file_name):
     except Exception as e:
         print(f"An error occurred: {e}")
 
+# Generate the graphs of a given folder
 def generateFFT(folder_name): 
     fft =  cr.FFTclass() 
     data, sampleRate = librosa.load('static/uploads/' + folder_name + '/' + folder_name + '_beeSound.wav')
@@ -75,18 +77,22 @@ def beeHealth_analysis(folder_name):
     source_file_name = "templateAnalysis.html"
     new_file_name = folder_name + ".html"
 
+    # Copy the source file to the templates folder with the new file name
     copy_file_in_template_directory(source_file_name, new_file_name)
 
+    # Generate the FFT graph
     generatePictures = gcr.GlobalClassRepresentation()
     generatePictures.getAllPictures('static/uploads/' + folder_name + '/', folder_name + '_beeSound.wav')
 
 
     return render_template(folder_name + '.html', path='uploads/' + folder_name)
 
+# Generate the route for the beeHealth_about.html file
 @app.route('/beeHealth_about.html')
 def beeHealth_about():
     return render_template('beeHealth_about.html')
 
+# Generate the route for the beeHealth_contact.html file
 @app.route('/beeHealth_contact.html')
 def beeHealth_contact():
     return render_template('beeHealth_contact.html')
