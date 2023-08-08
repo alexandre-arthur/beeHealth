@@ -39,9 +39,12 @@ def storeEverySampleButLast(audioPath : str, datasetPath : str, datasetName : st
 
     # Only take files with lab files
     fileNames = []
-    for fileName in os.listdir(audioPath):
-        if "wav" in fileName:
-            fileNames.append(fileName[:-sizeOfExtension])
+    try :
+        for fileName in os.listdir(audioPath):
+            if "wav" in fileName:
+                fileNames.append(fileName[:-sizeOfExtension])
+    except :
+        raise Exception(f"Does the {audioPath} folder exists ? If not, launch the python script in Representation/AudioDownload/JSONDownalod.py to download the files adn create the directory.")
 
     # Parse every file
     counter = 0

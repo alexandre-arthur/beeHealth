@@ -2,6 +2,7 @@ from keras.models import Sequential, model_from_json
 from keras.layers import Dense
 from numpy import loadtxt
 from time import time
+import os
 
 
 ##############################################################################################
@@ -192,9 +193,11 @@ def createAndStoreModelFromCSV(inputFileName : str, outputFileName : str, layers
     try :
         X, Y = loadCSVData(inputFileName, dataLength=dataLength, verbose=verbose)
     except:
-        print(f"Unable to load the data, verify if the file {inputFileName} exists.")
-        return
+        raise Exception(f"Unable to load the data, verify if the file {inputFileName} exists.")
 
     model = createModel(X, Y, layers, dataLength, verbose=verbose)
     evaluateModel(model, X, Y, verbose=verbose)
     StoreJSONModel(model, outputFileName, verbose=verbose)
+
+
+createAndStoreModelFromCSV(f"Deeplearning/NeuralHivework/HugeCSVHolder/FastHoneyTransform2.csv", f"Deeplearning/NeuralHivework/ModelBeeHealth/model2", [5000, 3000, 1000, 500, 500], dataLength=10, verbose=True)   
