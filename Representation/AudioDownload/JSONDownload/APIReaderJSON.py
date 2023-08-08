@@ -22,7 +22,7 @@ def download_file(url : str, fileName : str, verbose : bool = False):
 
 
 if __name__ == "__main__" :
-    jsonFile = "Representation\AudioDownload\JSONDownload\ToBeeOrNotToBee.json"
+    jsonFile = "Representation/AudioDownload/JSONDownload/ToBeeOrNotToBee.json"
     AudioPath = r"Audio/beeDataset/RawFilesFromWeb"
 
     if not os.path.exists(AudioPath):
@@ -38,7 +38,7 @@ if __name__ == "__main__" :
         for file_data in files:
             download_link = file_data["links"]["self"]
             fileName = "Audio/beeDataset/RawFilesFromWeb/" + file_data["key"]
-            download_file(download_link, fileName)
+            download_file(download_link, fileName, verbose=True)
         print("All files downloaded successfully!")
 
     except FileNotFoundError:
