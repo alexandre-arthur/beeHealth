@@ -34,7 +34,7 @@ def loadCSVData(fileName : str, dataLength : int = 8, verbose : bool = False) :
 
 
 def getLayersFromList(model, layers : list, dataLength : int) :
-    # Create the layers of a model from a list
+    # Create the layers of a model from a list, first layer will always be the number of input data
     # @arguments : - layers : list of the layers
     #              - dataLength : size of the input data
     #              - verbose : do we want to print or not (default : False)
@@ -181,7 +181,7 @@ def prediction(model, guess : list, dataLength : int, verbose : bool = False):
     predict(model, X_guess, Y_guess, verbose=verbose)
 
 
-def createAndStoreModelFromCSV(inputFileName : str, outputFileName : str, layers : list, dataLength : int, verbose : bool = False) :
+def createAndStoreModelFromCSV(inputFileName : str, outputFileName : str, layers : list, dataLength : int, epochs : int = 150, batchSize : int = 10, verbose : bool = False) :
     # Create and then store a ML model
     # @arguments : - inputFileName : the csv file with the data
     #              - outputFileName : the name of the json and the h5 with the data without an extension
@@ -195,9 +195,9 @@ def createAndStoreModelFromCSV(inputFileName : str, outputFileName : str, layers
     except:
         raise Exception(f"Unable to load the data, verify if the file {inputFileName} exists.")
 
-    model = createModel(X, Y, layers, dataLength, verbose=verbose)
+    model = createModel(X, Y, layers, dataLength, epochs=epochs, batchSize=batchSize, verbose=verbose)
     evaluateModel(model, X, Y, verbose=verbose)
     StoreJSONModel(model, outputFileName, verbose=verbose)
 
-
-createAndStoreModelFromCSV(f"Deeplearning/NeuralHivework/HugeCSVHolder/FastHoneyTransform2.csv", f"Deeplearning/NeuralHivework/ModelBeeHealth/model2", [5000, 3000, 1000, 500, 500], dataLength=10, verbose=True)   
+if __name__ == "__main__" :
+    createAndStoreModelFromCSV(f"Deeplearning/NeuralHivework/HugeCSVHolder/FastHoneyTransform2.csv", f"Deeplearning/NeuralHivework/ModelBeeHealth/model2", [5000, 3000, 1000, 500, 500], dataLength=10, verbose=True)   

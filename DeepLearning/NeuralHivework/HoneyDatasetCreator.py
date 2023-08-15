@@ -301,7 +301,7 @@ def storeLastSample(audioPath : str, datasetPath : str, datasetName : str, sampl
             print(f"Starting {fileName}")
         t = time.time()
 
-        getLastSamplesInCSV(f"{audioPath}{fileName}", datasetPath, datasetName, 5)
+        getLastSamplesInCSV(f"{audioPath}{fileName}", datasetPath, datasetName, sampleTime)
 
         if timeVerbose :
             print(f"{fileName} is done in {time.time() - t}s ({counter}/{len(fileNames[1:-1])})")
