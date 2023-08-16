@@ -27,10 +27,20 @@ To do so, you need to go to "Representation/AudioDownload/JSONDownload/" and to 
 # Arduino
 They are two folders : 
 - SoundDetection : contain an arduino code to read the I2S mic and display the value to a graph thanks to arduino IDE 
-- request : send resquest to a webserver with an esp32 
+- request : send resquest to a webserver with an esp32
 
 ## Deep Learning
+In this folder, you can find 2 folders git ignored : 
+- HugeCSVHolder : it contains all the datasets created using Model.ipynb (3rd code) and Processing.wav used to create the datasets.
+In this folder, there is two types of datasets (for now) :
+    - FastHoneyTransfrom_Xs, with X the number of seconds computed : it is the dataset used to train the model
+    - LastSamples_Xs, with X the number of seconds computed : it is the dataset used to verify that the model is correct. It uses every last 10 seconds of the audio files.
+- ModelBeeHealth : it contains the model stored. A model is stored with two files : a json and a h5 with the same names. 
+The name of a model is : model_Xs_Yl_Zn.h5 et model_Xs_Yl_Zn.json with X, the number of seconds computed, Y the number of layers and Z the number of hidden nodes (doesn't include the first and the last layers).
 
+The two python codes are not meant to be used in anything other than debug and are just functions used in Model.ipynb. HoneyDatasetCreator.py has all the functions related to create the dataset and ModelFunctions.py has all the functions related to creating the model.
+
+The Model.ipynb file is meant to create everything you need in the Machine Learning. It is not possible to use it on linux because of a problem with the default path. If you don't use linux to bother to fix it, else the problem will occur in the first code fragment
 
 ## Documentation
 
