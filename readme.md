@@ -15,19 +15,30 @@ We have divided the project in X parts :
 Everything is detailed under.
 
 ## Sommaire
-[Test](#audio)
+[Project Presentation](#project-presentation)
 
+[1. Arduino](#arduino)
+
+[2. Audio](#audio)
+
+[3. Deep Learning](#deep-learning)
+
+[4. Documentation](#documentation)
+
+[5. Representation](#representation)
+
+[6. Server](#server)
+
+# Arduino
+They are two folders : 
+- SoundDetection : contain an arduino code to read the I2S mic and display the value to a graph thanks to arduino IDE 
+- request : send resquest to a webserver with an esp32
 
 ## Audio
 This directory is the only one that doesn't exist when cloning the project. That is because the audio files are two big to go on the github. But you can donwload them on your computer, locally. 
 
 To do so, you need to go to "Representation/AudioDownload/JSONDownload/" and to launch APIReaderJSON.py which reads the ToBeeOrNotToBee.json file and download all the files into the "/Audio" folder. It takes approximately 4 minutes and you need an internet connexion.
 
-
-# Arduino
-They are two folders : 
-- SoundDetection : contain an arduino code to read the I2S mic and display the value to a graph thanks to arduino IDE 
-- request : send resquest to a webserver with an esp32
 
 ## Deep Learning
 In this folder, you can find 2 folders git ignored : 
