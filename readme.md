@@ -40,10 +40,17 @@ The name of a model is : model_Xs_Yl_Zn.h5 et model_Xs_Yl_Zn.json with X, the nu
 
 The two python codes are not meant to be used in anything other than debug and are just functions used in Model.ipynb. HoneyDatasetCreator.py has all the functions related to create the dataset and ModelFunctions.py has all the functions related to creating the model.
 
-The Model.ipynb file is meant to create everything you need in the Machine Learning. It is not possible to use it on linux because of a problem with the default path. If you don't use linux to bother to fix it, else the problem will occur in the first code fragment
+The Model.ipynb file is meant to create everything you need in the Machine Learning. It is not possible to use it on linux because of a problem with the default path. If you don't use linux to bother to fix it, else the problem will occur in the first code fragment.
+
+This part is not finished yet, since we didn't find a good enough model to recognize bee. Here are the steps we wanted to do but never got the time to :
+1. Find a model with >90% accuracy
+2. Try to have an equivalent model using other representation than the FFT
+3. Create our personnal dataset using a microphone
 
 ## Documentation
-
+The file include all the documentation we used for this project. 
+HTML+CSS has been used for the Server 
+Research has been used for the Representation
 
 ## Representation
 To use this file, you must have the librosa library installed.
