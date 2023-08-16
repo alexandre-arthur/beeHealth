@@ -2,7 +2,6 @@ import os
 from wave import open as waveOpen
 from re import split as reSplit
 import numpy as np
-import math
 import librosa as rosa
 import time
 
